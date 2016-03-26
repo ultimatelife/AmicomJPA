@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>  
+</head>
+
+<body>
+	<div class="container" ng-app="myApp" ng-controller="validateCtrl" >
+ 		<input type="text" ng-model='username' ng-keyup="checkDuplicate()"></input>
+		<span style="color:red" ng-if="isDuplicate == 'false'" ><h4>checkDuplicate : {{isDuplicate}}</h4></span> 
+
+		<h2>{{myWelcome}}</h2>
+	</div>
+</body>
+
+<script>
+
+	var app = angular.module('myApp', []);
+	app.controller('validateCtrl', function($scope,$http) {
+		$scope.checkDuplicate = function(){
+			$http.get("http://localhost:8080/amicommember/isDuplicate?username=" + $scope.username)
+			.then(function(response) {
+				$scope.myWelcome = response.data;
+			});
+		};
+		// $scope.isDuplicate = 'false';
+	});	
+
+</script>
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+	<meta charset="UTF-8"></meta>
+	<title></title>
+	<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
+	<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+	<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+	<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-resource.min.js"></script>
+</head>
+<body ng-app='myApp' ng-controller="controller">
+	
+	{{test}}
+	{{replys}}
+	
+	
+	<br/>
+	<div>
+		Repeat
+		<div ng-repeat="asdf in replys">
+			<h4>{{asdf.replyID}}</h4><br/>
+			<h4>{{asdf.content}}</h4><br/>
+			<h4>{{asdf.amicomMember.username}}</h4><br/>
+		</div>
+	</div>
+	
+	<div>
+		<textarea rows="10" cols="10" ng-model="$parent.replyContent">
+		</textarea>
+		<button ng-click="sendData()">Button</button>	
+	</div>
+	
+	test : 
+{{testReplyReceive}}
+
+<script>
+//<![CDATA[
+	var myModule = angular.module('myApp', [ 'ngResource' ]);
+	
+	myModule.controller('controller', function($scope, $resource, $location, $http) {
+			$scope.test = "test";
+			$scope.content = "asdf";
+			
+			var replysQuery = $resource('http://localhost:8080/reply/' + 131072);
+			
+			$scope.listReply = function(){
+				replysQuery.query(function(data){
+					$scope.replys = data;
+				});
+			};
+			$scope.listReply();
+			
+// 			$scope.updateReply = function(){
+// 				replysQuery.save({content:$scope.content}, function() {
+// 				});
+// 				$scope.content = "";
+// 				$scope.listReply();
+// 			};
+			
+	 		$scope.sendData = function () {
+				$http.post('http://localhost:8080/reply/32768', {"content" : $scope.replyContent}).
+				success(function (data, status, headers, config){
+					$scope.testReplyReceive = data;
+				});
+			};
+	 		
+	 		
+		})
+//]]>
+</script>
+</body>
+
+
+</html>
