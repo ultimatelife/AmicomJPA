@@ -1,5 +1,7 @@
 package com.amicom.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -61,5 +63,15 @@ public class AmicomMemberController {
 		System.out.println(username);
 		return amicomMemberService.isDuplidate(username);
 	}
-
+	
+	@RequestMapping(value = "/board", method = RequestMethod.GET)
+	String board() {
+		return "amicommember/board";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "list", method = RequestMethod.GET)
+	List<AmicomMember> list() {
+		return amicomMemberService.list();
+	}
 }

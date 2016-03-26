@@ -1,5 +1,7 @@
 package com.amicom.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Service;
@@ -50,5 +52,9 @@ public class AmicomMemberService {
 		} catch (Exception e) {
 			return amicomMember;
 		}
+	}
+
+	public List<AmicomMember> list() {
+		return amicomMemberRepository.findAll();
 	}
 }
