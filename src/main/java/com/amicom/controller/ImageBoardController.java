@@ -38,10 +38,10 @@ public class ImageBoardController {
 		return "imageboard/board";
 	}
 
+	@RequestMapping(value = "/size/{boardName}", method = RequestMethod.GET)
 	@ResponseBody
-	@RequestMapping(value = "size/{boardName}", method = RequestMethod.GET)
-	int pageSize(@PathVariable String boardName) {
-		return imageBoardService.size(boardName);
+	List pageSize(@PathVariable String boardName) {
+		return Arrays.asList(imageBoardService.size(boardName));
 	}
 
 	@RequestMapping(value = "read/detail/{boardId}", method = RequestMethod.GET)
@@ -86,6 +86,6 @@ public class ImageBoardController {
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	String delete(@RequestParam String boardName, @RequestParam int boardId) {
 		imageBoardService.delete(boardId);
-		return "redirect:/imageboard/page/" + boardName + "?page=0&size=15";
+		return "redirect:/imageboard/board/" + new URLEncoder().encode(boardName);
 	}
 }

@@ -24,7 +24,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div style="height: 100px">
 		<div th:include="headbar"></div>
 	</div>
-
+	
 	<div class="container">
 		<h1>{{boardName}}
 			<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal1">Write</button>
@@ -41,7 +41,11 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 					<h4>이름 : {{row.amicomMember.name}}</h4>
 					<p>내용 : {{row.content}}</p>
 					
-					<button class="btn-md glyphicon glyphicon-chevron-right btn btn-info" ng-if="currentUsername == row.amicomMember.username">Delete</button>
+					<form action="/imageboard/delete" th:method="post" ng-if="currentUsername == row.amicomMember.username">
+						<input type="hidden" name="boardName" value="{{row.boardName.boardName}}" />
+						<input type="hidden" name="boardId" value="{{row.boardId}}" />
+						<input class="btn-md glyphicon glyphicon-chevron-right btn btn-info" type="submit" value="Delete"/>
+					</form>
 					<button class="btn-md glyphicon glyphicon-chevron-right btn btn-info" data-toggle="modal" data-target="{{'#'+row.boardId}}" ng-click="changeReply">More</button>
 					
 					<!-- Modal -->
@@ -63,20 +67,20 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 										<input type="submit" class ="btn btn-primary" ng-click="sendReply()" value="Add Comment"></input>
 									</div>									
 									
-									<div class="panel panel-warning">
-										<div class="panel-heading">Replys</div>
-										<div class="panel-body">
-											<table class="table">
-												<tbody>
-													<tr ng-repeat="reply in replys">
-														<td class="col-md-1">{{reply.amicomMember.name}}</td>
-														<td class="col-md-4">{{reply.content}}</td>
-														<td class="col-md-1"><span ng-click="deleteReply(reply.amicomMember.username, reply.replyId)" class="glyphicon glyphicon-minus"></span></td>
-													</tr>
-												</tbody>
-											</table>      
-										</div>
-									</div>
+<!-- 									<div class="panel panel-warning"> -->
+<!-- 										<div class="panel-heading">Replys</div> -->
+<!-- 										<div class="panel-body"> -->
+<!-- 											<table class="table"> -->
+<!-- 												<tbody> -->
+<!-- 													<tr ng-repeat="reply in replys"> -->
+<!-- 														<td class="col-md-1">{{reply.amicomMember.name}}</td> -->
+<!-- 														<td class="col-md-4">{{reply.content}}</td> -->
+<!-- 														<td class="col-md-1"><span ng-click="deleteReply(reply.amicomMember.username, reply.replyId)" class="glyphicon glyphicon-minus"></span></td> -->
+<!-- 													</tr> -->
+<!-- 												</tbody> -->
+<!-- 											</table>       -->
+<!-- 										</div> -->
+<!-- 									</div> -->
 									
 								</div>
 								<div class="modal-footer">
@@ -131,8 +135,19 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 				</div>
 			</div>
 		</div>
+		
+	  <div class="row">
+	  	<div class="col-sm-4" ></div>
+	    <div class="col-sm-8">
+		  <ul class="pagination pagination-sm">
+		    <li ng-repeat="page in paging" ng-click="changeRow({{page}})">
+		    	<a>{{page + 1}}</a>
+		    </li>
+		  </ul>	    	
+	    </div>
+	  </div>		
 	</div>
-
+	
 	<script th:inline="javascript">
 //<![CDATA[
            
@@ -149,10 +164,45 @@ myModule.controller('controller', function($scope, $resource, $location) {
 		$scope.boardName = $scope.boardName.substring(0, $scope.boardName.length - 1); 
 	}
 	
+	/* $scope.delete = funtion(row, boardId){
+		var index = $scope.rows.index(row);
+		$scope.rows.splice(index, 1);
+		
+		$http.post("http://localhost:8080/imageboard/delete/" + $scope.boardName, {"boardId" : boardId}).
+		success(function(data){
+			$scope.allFiles = data 
+		});
+	} */
+	
 	var res = $resource("http://localhost:8080/imageboard/allList/" + $scope.boardName);
 	res.query(function(data) {
 		$scope.rows = data;
+// 		$scope.sizePage = $scope.rows.length;
+// 		alert($scope.sizePage);
 	});
+	
+	res = $resource("http://localhost:8080/imageboard/size/" + $scope.boardName);
+	res.query(function(data) {
+		var rest = data % 10;
+		var share = Math.floor(data / 10);
+		var paging = new Array();
+		
+		for(var i = 0 ; i < share ; i++){
+			paging.push(i);
+		}
+		if(rest > 0){
+			paging.push(share);
+		}
+		$scope.paging = paging;
+	})
+	
+	$scope.changeRow = function(page){
+		alert(page);
+		var changeRowQuery = $resource("http://localhost:8080/imageboard/page/" + $scope.boardName);
+		changeRowQuery.get({"page" : page, "size" : 10}, function(data) {
+			$scope.rows = data;
+		})
+	}
 	
 	/*
 	var res = $resource("http://localhost:8080/imageboard/size/" + $scope.boardName);

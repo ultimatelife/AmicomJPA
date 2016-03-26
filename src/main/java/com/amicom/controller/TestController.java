@@ -40,7 +40,7 @@ public class TestController {
 
 	@Autowired
 	MailMail mailMail;
-
+	
 	@RequestMapping("normalboard")
 	List<NormalBoard> getNormalBoard() {
 		// System.out.println("test1");
