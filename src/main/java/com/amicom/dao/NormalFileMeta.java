@@ -10,11 +10,9 @@ import com.amicom.dao.abs.AbstractFileMeta;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class NormalFileMeta extends AbstractFileMeta implements Serializable {
@@ -22,4 +20,13 @@ public class NormalFileMeta extends AbstractFileMeta implements Serializable {
 	@JoinColumn(name = "boardID", nullable = false)
 	@JsonBackReference
 	public NormalBoard normalBoard;
+
+	public NormalBoard getNormalBoard() {
+		return normalBoard;
+	}
+
+	public void setNormalBoard(NormalBoard normalBoard) {
+		this.normalBoard = normalBoard;
+	}
+	
 }

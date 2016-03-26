@@ -140,13 +140,20 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	  	<div class="col-sm-4" ></div>
 	    <div class="col-sm-8">
 		  <ul class="pagination pagination-sm">
-		    <li ng-repeat="page in paging" ng-click="changeRow({{page}})">
-		    	<a>{{page + 1}}</a>
+		    <li ng-repeat="pageNumber in paging">
+		    	<a ng-click="changeRow(pageNumber)">{{pageNumber + 1}}</a>
 		    </li>
 		  </ul>	    	
 	    </div>
 	  </div>		
 	</div>
+	
+	<button ng-click="ppp(100)">
+	asdf
+	</button>
+	<button ng-click="changeRow(1)">
+	asdf
+	</button>
 	
 	<script th:inline="javascript">
 //<![CDATA[
@@ -154,7 +161,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
            
 var myModule = angular.module('myApp', [ 'ngResource']);
 
-myModule.controller('controller', function($scope, $resource, $location) {
+myModule.controller('controller', function($scope, $resource, $location, $http) {
 	var url = $location.absUrl();
 	
 	$scope.currentUsername = [[${userInfo}]];
@@ -174,11 +181,9 @@ myModule.controller('controller', function($scope, $resource, $location) {
 		});
 	} */
 	
-	var res = $resource("http://localhost:8080/imageboard/allList/" + $scope.boardName);
+	var res = $resource("http://localhost:8080/imageboard/page/" + $scope.boardName + "?page=" + 0 + "&size=10");
 	res.query(function(data) {
 		$scope.rows = data;
-// 		$scope.sizePage = $scope.rows.length;
-// 		alert($scope.sizePage);
 	});
 	
 	res = $resource("http://localhost:8080/imageboard/size/" + $scope.boardName);
@@ -196,13 +201,19 @@ myModule.controller('controller', function($scope, $resource, $location) {
 		$scope.paging = paging;
 	})
 	
-	$scope.changeRow = function(page){
-		alert(page);
-		var changeRowQuery = $resource("http://localhost:8080/imageboard/page/" + $scope.boardName);
-		changeRowQuery.get({"page" : page, "size" : 10}, function(data) {
-			$scope.rows = data;
-		})
+	$scope.ppp = function(data){
+		alert(data);
 	}
+	
+	$scope.changeRow = function(page){
+		$http.get("http://localhost:8080/imageboard/page/" + $scope.boardName + "?page=" + page + "&size=10").
+		success(function(data){
+			$scope.rows = data;
+// 			$scope.allFiles = data
+		}).fail(function(data) {
+			alert(data)
+		})
+	};
 	
 	/*
 	var res = $resource("http://localhost:8080/imageboard/size/" + $scope.boardName);

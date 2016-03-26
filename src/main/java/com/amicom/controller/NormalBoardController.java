@@ -86,6 +86,6 @@ public class NormalBoardController {
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	String delete(@RequestParam String boardName, @RequestParam int boardId) {
 		normalBoardService.delete(boardId);
-		return "redirect:/normalboard/board/";
+		return "redirect:/normalboard/board/" + boardName;
 	}
 }

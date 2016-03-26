@@ -87,7 +87,7 @@
 		      <tr ng-repeat="reply in replys">
 		        <td class="col-md-1">{{reply.amicomMember.name}}</td>
 		        <td class="col-md-4">{{reply.content}}</td>
-		        <td class="col-md-1"><span ng-click="deleteReply(reply.amicomMember.username, reply.replyId)" class="glyphicon glyphicon-minus"></span></td>
+		        <td class="col-md-1"><span ng-click="deleteReply(reply.amicomMember.username, reply.replyId, $index)" class="glyphicon glyphicon-minus"></span></td>
 		      </tr>
 		    </tbody>
 		  </table>      
@@ -102,7 +102,6 @@
 	myModule.controller('controller', function($scope, $resource, $location, $http) {
 			var url = $location.absUrl();
 			$scope.currentUsername = [[${userInfo}]];
-			alert($scope.currentUsername);
 			
 			$scope.boardId = url.split('/')[5]
 			$scope.boardName = url.split('/')[6];
@@ -117,23 +116,20 @@
 	 			$http.post('http://localhost:8080/reply/' + $scope.boardId, {"content" : $scope.replyContent}).
 				success(function (data, status, headers, config){
 					$scope.replys.push(data);
-					$scope.testReplyReceive = data;
 					alert("추가되었습니다.");
-					$scope.replyContent = "";
 				});
 			};
 			
-			$scope.deleteReply = function(replyUsername, replyId){
+			$scope.deleteReply = function(replyUsername, replyId, index){
 				if(replyUsername == $scope.currentUsername){
 					alert("삭제 할수있습니다.")
 					$http.delete('http://localhost:8080/reply/delete/' + replyId).
 					success(function (data, status, headers, config) {
-					});	
+					});
 					
-					$http.get("http://localhost:8080/reply/" + $scope.boardId)
-				    .then(function (response) {$scope.replys = response.data});
+					$scope.replys.splice(index,1); 
 				}else{
-					alert("권한이 없습니다.")
+					alert("권한이미 없습니다.")
 				}
 			}
 		})
