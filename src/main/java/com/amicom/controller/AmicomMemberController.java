@@ -1,27 +1,24 @@
 package com.amicom.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.amicom.controller.form.Login;
 import com.amicom.dao.AmicomMember;
 import com.amicom.service.AmicomMemberService;
-import com.amicom.service.security.LoginUserDetails;
+import com.amicom.service.mail.MailMail;
 
 @Controller
 @RequestMapping("amicommember")
@@ -30,6 +27,9 @@ public class AmicomMemberController {
 
 	@Autowired
 	AmicomMemberService amicomMemberService;
+	
+	@Autowired
+	MailMail mailMail;
 	
 	@RequestMapping(value="loginForm", method = RequestMethod.GET)
 	String login(Model model) {
@@ -52,8 +52,14 @@ public class AmicomMemberController {
 	@RequestMapping(value = "insert", method = RequestMethod.POST)
 	String insert(@Validated AmicomMember amicomMember, BindingResult bindingResult, Model model) {
 		//Send Mail
-		amicomMember.setEnabled(true);
+		System.out.println("Senior : " + amicomMember.getSenior());
+		
+		amicomMember.setEnabled(false);
+		amicomMember.setUuid(UUID.randomUUID().toString());
+		
 		amicomMemberService.insert(amicomMember);
+		mailMail.signUpConfirm(amicomMember.getUsername(), amicomMember.getUuid());
+		
 		return "redirect:loginForm";
 	}
 
@@ -73,5 +79,16 @@ public class AmicomMemberController {
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	List<AmicomMember> list() {
 		return amicomMemberService.list();
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "confirm/{uuid}", method = RequestMethod.GET)
+	String confirm(@PathVariable String uuid) {
+		try {
+			amicomMemberService.confirm(uuid);
+			return "Email Confirmation is successed";
+		} catch (Exception e) {
+			return "Email Confirmation is failed";
+		}
 	}
 }

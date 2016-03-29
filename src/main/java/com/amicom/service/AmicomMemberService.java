@@ -57,4 +57,8 @@ public class AmicomMemberService {
 	public List<AmicomMember> list() {
 		return amicomMemberRepository.findAll();
 	}
+
+	public void confirm(String uuid) {
+		amicomMemberRepository.confirm(uuid);
+	}
 }

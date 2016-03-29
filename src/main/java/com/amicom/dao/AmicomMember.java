@@ -77,8 +77,7 @@ public class AmicomMember implements Serializable {
 	
 	String uuid;
 	
-	@NotEmpty
-	int senior;
+	String senior;
 	
 
 //	@Transient

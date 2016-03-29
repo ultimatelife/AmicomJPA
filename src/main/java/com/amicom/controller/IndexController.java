@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.amicom.dao.AmicomMember;
 import com.amicom.service.security.LoginUserDetails;
 
 @Controller
@@ -17,9 +16,11 @@ import com.amicom.service.security.LoginUserDetails;
 public class IndexController {
 	@RequestMapping("index")
 	String index(Principal principal, Model model, @AuthenticationPrincipal LoginUserDetails loginUserDetails){
-//		if(loginUserDetails.getUser().getUuid() == null){
-//			return "reditect:/amicommember/logout";
-//		}
+		System.out.println(loginUserDetails.getUser().isEnabled());
+		
+		if(!loginUserDetails.getUser().isEnabled()){
+			return "redirect:amicommember/loginForm";
+		}
 		
 		System.out.println(principal.getName());
 		model.addAttribute("userInfo", principal.getName());
