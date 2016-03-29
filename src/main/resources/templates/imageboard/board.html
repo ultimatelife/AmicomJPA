@@ -46,54 +46,53 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 						<input type="hidden" name="boardId" value="{{row.boardId}}" />
 						<input class="btn-md glyphicon glyphicon-chevron-right btn btn-info" type="submit" value="Delete"/>
 					</form>
-					<button class="btn-md glyphicon glyphicon-chevron-right btn btn-info" data-toggle="modal" data-target="{{'#'+row.boardId}}" ng-click="changeReply">More</button>
-					
-					<!-- Modal -->
-					<div class="modal fade" id="{{row.boardId}}" role="dialog">
-						<div class="modal-dialog modal-lg">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h3>{{row.title}}</h3>
-									<h4>이름 : {{row.amicomMember.name}}</h4>
-									<h4>시간 : {{row.timeStamp}}</h4>
-								</div>
-								<div class="modal-body">
-									<img class="thumbnail img-responsive" ng-src="http://localhost:8080/img/{{boardName}}/{{row.boardId}}/{{row.fileMetas.fileName}}"/>
-									
-									<div class="form-group">
-										<label for="comment">Comment</label>
-										<textarea class="form-control" rows="3" id="comment" ng-model="$parent.replyContent" ng-required="true"></textarea>
-										<input type="submit" class ="btn btn-primary" ng-click="sendReply()" value="Add Comment"></input>
-									</div>									
-									
-<!-- 									<div class="panel panel-warning"> -->
-<!-- 										<div class="panel-heading">Replys</div> -->
-<!-- 										<div class="panel-body"> -->
-<!-- 											<table class="table"> -->
-<!-- 												<tbody> -->
-<!-- 													<tr ng-repeat="reply in replys"> -->
-<!-- 														<td class="col-md-1">{{reply.amicomMember.name}}</td> -->
-<!-- 														<td class="col-md-4">{{reply.content}}</td> -->
-<!-- 														<td class="col-md-1"><span ng-click="deleteReply(reply.amicomMember.username, reply.replyId)" class="glyphicon glyphicon-minus"></span></td> -->
-<!-- 													</tr> -->
-<!-- 												</tbody> -->
-<!-- 											</table>       -->
-<!-- 										</div> -->
-<!-- 									</div> -->
-									
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								</div>
-							</div>
-						</div>
-					</div>	               
+					<button class="btn-md glyphicon glyphicon-chevron-right btn btn-info" data-toggle="modal" data-target="#imageModal" ng-click="changeCurrentRow(row)">More</button>
 					
 					
 				</div>
 			</div>
-		
+
+			<!-- Modal -->
+			<div class="modal fade" id="imageModal" role="dialog">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h3>{{currentRow.title}}</h3>
+							<h4>이름 : {{currentRow.amicomMember.name}}</h4>
+							<h4>시간 : {{currentRow.timeStamp}}</h4>
+						</div>
+						<div class="modal-body">
+							<img class="thumbnail img-responsive" ng-src="http://localhost:8080/img/{{boardName}}/{{currentRow.boardId}}/{{currentRow.fileMetas.fileName}}"/>
+							
+							<div class="form-group">
+								<label for="comment">Comment</label>
+								<textarea class="form-control" rows="3" id="comment" ng-model="$parent.replyContent" ng-required="true"></textarea>
+								<input type="submit" class ="btn btn-primary" ng-click="sendReply()" value="Add Comment"></input>
+							</div>									
+							
+							<div class="panel panel-warning">
+								<div class="panel-heading">Replys</div>
+								<div class="panel-body">
+									<table class="table">
+										<tbody>
+											<tr ng-repeat="reply in currentRow.replys">
+												<td class="col-md-1">{{currentRow.amicomMember.name}}</td>
+												<td class="col-md-4">{{currentRow.content}}</td>
+												<td class="col-md-1"><span ng-click="deleteReply(reply.replyId, $index)" class="glyphicon glyphicon-minus"></span></td>
+											</tr>
+										</tbody>
+									</table>      
+								</div>
+							</div>
+							
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>		
 		<!--  Write Modal-->
 		<div class="modal fade" id="myModal1" role="dialog">
 			<div class="modal-dialog modal-lg">
@@ -166,9 +165,30 @@ myModule.controller('controller', function($scope, $resource, $location, $http) 
 	
 	$scope.currentUsername = [[${userInfo}]];
 
+	$scope.changeCurrentRow = function(row){
+		$scope.currentRow = row;
+	}
+	
 	$scope.boardName = decodeURI(url.split('/')[5])
 	if($scope.boardName.charAt($scope.boardName.length - 1) == "#"){
 		$scope.boardName = $scope.boardName.substring(0, $scope.boardName.length - 1); 
+	}
+	
+	$scope.sendReply = function(){
+		$http.post('http://localhost:8080/imagereply/' + $scope.currentRow.boardId, {"content" : $scope.replyContent}).
+		success(function (data, status, headers, config){
+			$scope.currentRow.replys.push(data);
+			alert("추가되었습니다.");
+		});
+	}
+	
+	$scope.deleteReply = function(replyId, replyIndex){
+		alert(replyId);
+		alert(replyIndex);
+		$http.delete("http://localhost:8080/imagereply/delete/" + replyId)
+		.success(function(data, status, headers, config) {
+		});
+		$scope.currentRow.replys.splice(replyIndex, 1)
 	}
 	
 	/* $scope.delete = funtion(row, boardId){

@@ -3,7 +3,6 @@ package com.amicom.dao;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -15,6 +14,7 @@ import javax.persistence.Transient;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amicom.dao.abs.AbstractBoard;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
@@ -30,9 +30,10 @@ public class ImageBoard extends AbstractBoard implements Serializable {
 
 	@JsonManagedReference
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "board", cascade = CascadeType.ALL)
-	public Set<ImageReply> replys;
+	public List<ImageReply> replys;
 
 	@Transient
+	@JsonIgnore
 	List<MultipartFile> multipartFiles;
 	
 	public ImageBoard(BoardChart boardName, String title, String content, Timestamp timeStamp,
@@ -40,6 +41,10 @@ public class ImageBoard extends AbstractBoard implements Serializable {
 		super(boardName, title, content, timeStamp, amicomMember);
 	}
 
+	public ImageBoard(int boardId) {
+		setBoardId(boardId);
+	}
+	
 	public ImageFileMeta getFileMetas() {
 		return fileMetas;
 	}
@@ -48,11 +53,11 @@ public class ImageBoard extends AbstractBoard implements Serializable {
 		this.fileMetas = fileMetas;
 	}
 
-	public Set<ImageReply> getReplys() {
+	public List<ImageReply> getReplys() {
 		return replys;
 	}
 
-	public void setReplys(Set<ImageReply> replys) {
+	public void setReplys(List<ImageReply> replys) {
 		this.replys = replys;
 	}
 
@@ -63,5 +68,6 @@ public class ImageBoard extends AbstractBoard implements Serializable {
 	public void setMultipartFiles(List<MultipartFile> multipartFiles) {
 		this.multipartFiles = multipartFiles;
 	}
+
 	
 }

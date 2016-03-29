@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.amicom.dao.abs.AbstractReply;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,5 +21,6 @@ import lombok.NoArgsConstructor;
 public class ImageReply extends AbstractReply implements Serializable{
 	 @ManyToOne(fetch = FetchType.LAZY)
 	 @JoinColumn(name="boardID", nullable=false)
+	 @JsonBackReference
 	 private ImageBoard board;
 }
