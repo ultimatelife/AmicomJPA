@@ -79,6 +79,7 @@ public class AmicomMember implements Serializable {
 	
 	String senior;
 	
+	String job;
 
 //	@Transient
 //	@OneToMany(fetch = FetchType.EAGER, mappedBy = "boardID", cascade = CascadeType.ALL)

@@ -60,6 +60,13 @@
                         	기수
                         	<span class="glyphicon sort-icon" ng-show="sortKey=='senior'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
                        	</th>
+                       	<th class="col-md-2" ng-click="sort('job')">
+                        	직책
+                        	<span class="glyphicon sort-icon" ng-show="sortKey=='job'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                       	</th>
+                       	<th class="col-md-2">
+                        	Check
+                       	</th>
 <!--                        	<th class="col-md-3" ng-click="sort('position')"> -->
 <!--                         	직무 -->
 <!--                         	<span class="glyphicon sort-icon" ng-show="sortKey=='position'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
@@ -73,6 +80,10 @@
 						<td class="col-md-2">{{row.studentNumber}}</td>
 						<td class="col-md-2">{{row.major}}</td>
 						<td class="col-md-2">{{row.senior}}</td>
+						<td class="col-md-2">{{row.job}}</td>
+						<td class="col-md-1">
+							<input type="checkbox" value="{{row.username}}" id="checkBox"/>
+						</td>
 <!-- 						<td class="col-md-3">{{row.position}}</td> -->
                     </tr>
                 </tbody>
@@ -95,11 +106,14 @@
 			$scope.rows = data;
 		});
 		
+		$scope.cuurentUserAuthority = [[${userAuthority}]];
 		
 	    $scope.sort = function(keyname){
 	        $scope.sortKey = keyname;   //set the sortKey to the param passed
 	        $scope.reverse = !$scope.reverse; //if true make it false and vice versa
 	    }
+	    
+		
 	})
 //]]>		
 </script>

@@ -29,6 +29,10 @@
 	
 	<div class="container">
 		<h1>{{boardName}}</h1>
+		<h3>공지사항에 글을 올리게 되면 전원에게 E-mail이 발송됩니다.</h3>
+		<br/>
+		
+		<h4 ng-if="!whenNoticeBoard">공지사항은 글작성은 Administrator만 가능합니다.</h4>
 		
 		<div class="bs-component">
 		    <form class="form-inline">
@@ -75,40 +79,41 @@
         </div>		
 	
 		<div class="table-responsive">
-			<table id="example" class="table" cellspacing="0"
-			width="100%">
-			<thead>
-				<tr>
-					<th>번호</th>
-					<th>제목</th>
-					<th>작성자</th>
-					<th>날짜/시간</th>
-				</tr>
-			</thead>
+<!-- 			<table id="example" class="table" cellspacing="0" -->
+<!-- 			width="100%"> -->
+<!-- 			<thead> -->
+<!-- 				<tr> -->
+<!-- 					<th>번호</th> -->
+<!-- 					<th>제목</th> -->
+<!-- 					<th>작성자</th> -->
+<!-- 					<th>날짜/시간</th> -->
+<!-- 				</tr> -->
+<!-- 			</thead> -->
 
-			<tfoot>
-				<tr>
-					<th>번호</th>
-					<th>제목</th>
-					<th>작성자</th>
-					<th>날짜/시간</th>
-				</tr>
+<!-- 			<tfoot> -->
+<!-- 				<tr> -->
+<!-- 					<th>번호</th> -->
+<!-- 					<th>제목</th> -->
+<!-- 					<th>작성자</th> -->
+<!-- 					<th>날짜/시간</th> -->
+<!-- 				</tr> -->
 
-			</tfoot>
+<!-- 			</tfoot> -->
 
-			<tbody id="tbody">
-				<tr ng-repeat="row in rows">
-					<td class="col-md-1">{{row.boardId}}</td>
-					<td class="col-md-4"><a href="http://localhost:8080/normalboard/read/{{row.boardId}}/{{boardName}}">{{row.title}}</a></td>
-					<td class="col-md-3">{{row.amicomMember.name}}</td>
-					<td class="col-md-3">{{row.timeStamp}}</td>
-				</tr>
-			</tbody>
-		</table>
+<!-- 			<tbody id="tbody"> -->
+<!-- 				<tr ng-repeat="row in rows"> -->
+<!-- 					<td class="col-md-1">{{row.boardId}}</td> -->
+<!-- 					<td class="col-md-4"><a href="http://localhost:8080/normalboard/read/{{row.boardId}}/{{boardName}}">{{row.title}}</a></td> -->
+<!-- 					<td class="col-md-3">{{row.amicomMember.name}}</td> -->
+<!-- 					<td class="col-md-3">{{row.timeStamp}}</td> -->
+<!-- 				</tr> -->
+<!-- 			</tbody> -->
+<!-- 		</table> -->
 		
-		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal1">Write</button>
+		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal1" ng-if="whenNoticeBoard" >Write</button>
 		
-		<div class="modal fade" id="myModal1" role="dialog">
+		
+		<div class="modal fade" id="myModal1" role="dialog" ng-if="whenNoticeBoard">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -148,6 +153,8 @@
 				</div>
 			</div>
 		</div>
+		
+		
 	</div>
 </div>
 
@@ -156,12 +163,25 @@
 	var myModule = angular.module('myApp', [ 'ngResource', 'angularUtils.directives.dirPagination']);
 	
 	myModule.controller('controller', function($scope, $resource, $location) {
+			//BoardName
 			var url = $location.absUrl();
 			$scope.boardName = decodeURI(url.split('/')[5]);
 			if($scope.boardName.charAt($scope.boardName.length - 1) == "#"){
 				$scope.boardName = $scope.boardName.substring(0, $scope.boardName.length - 1); 
 			}
 			
+			
+			//Authority Check When 공지사항
+			$scope.currentUsername = [[${userInfo}]];
+			$scope.currentUserAuthority = [[${userAuthority}]];
+			$scope.whenNoticeBoard = true;
+			if($scope.boardName == '공지사항'){
+				if($scope.currentUserAuthority == 'ROLE_ADMIN'){
+					$scope.whenNoticeBoard = true;	
+				}else{
+					$scope.whenNoticeBoard = false;					
+				}
+			}
 			
 // 			$http.get("http://localhost:8080/normalboard/page/java?page=0&size=10").
 // 			success(function(data){

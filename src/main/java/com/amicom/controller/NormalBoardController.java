@@ -9,6 +9,7 @@ import org.apache.catalina.util.URLEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,18 +24,20 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.amicom.controller.form.BoardForm;
 import com.amicom.dao.NormalBoard;
 import com.amicom.service.NormalBoardService;
+import com.amicom.service.security.LoginUserDetails;
 
 @Controller
 @RequestMapping("normalboard")
-@SessionAttributes("userInfo")
+@SessionAttributes({"userInfo",""})
 public class NormalBoardController {
 
 	@Autowired
 	NormalBoardService normalBoardService;
 
 	@RequestMapping(value = "/board/{boardName}", method = RequestMethod.GET)
-	String pageMove(@PathVariable String boardName, Model model, Principal principal) {
-		model.addAttribute("userInfo", principal.getName());
+	String pageMove(@AuthenticationPrincipal LoginUserDetails loginUserDetails, Model model, Principal principal) {
+		model.addAttribute("userInfo", loginUserDetails.getUser().getUsername());
+		model.addAttribute("userAuthority", loginUserDetails.getUser().getAuthority());
 		return "normalboard/board";
 	}
 

@@ -164,6 +164,7 @@ myModule.controller('controller', function($scope, $resource, $location, $http) 
 	var url = $location.absUrl();
 	
 	$scope.currentUsername = [[${userInfo}]];
+	$scope.cuurentUserAuthority = [[${userAuthority}]]; 
 
 	$scope.changeCurrentRow = function(row){
 		$scope.currentRow = row;
@@ -183,8 +184,6 @@ myModule.controller('controller', function($scope, $resource, $location, $http) 
 	}
 	
 	$scope.deleteReply = function(replyId, replyIndex){
-		alert(replyId);
-		alert(replyIndex);
 		$http.delete("http://localhost:8080/imagereply/delete/" + replyId)
 		.success(function(data, status, headers, config) {
 		});

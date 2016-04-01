@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,13 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.amicom.controller.form.EmailSendForm;
 import com.amicom.dao.AmicomMember;
 import com.amicom.service.AmicomMemberService;
 import com.amicom.service.mail.MailMail;
+import com.amicom.service.security.LoginUserDetails;
 
 @Controller
 @RequestMapping("amicommember")
-@SessionAttributes("userInfo")
+@SessionAttributes({"userInfo", "userAuthority"})
 public class AmicomMemberController {
 
 	@Autowired
@@ -71,7 +75,8 @@ public class AmicomMemberController {
 	}
 	
 	@RequestMapping(value = "/board", method = RequestMethod.GET)
-	String board() {
+	String board(Model model, @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+		model.addAttribute("userAuthority", loginUserDetails.getUser().getAuthority());
 		return "amicommember/board";
 	}
 	
@@ -90,5 +95,13 @@ public class AmicomMemberController {
 		} catch (Exception e) {
 			return "Email Confirmation is failed";
 		}
+	}
+	
+	@Async
+	@ResponseBody
+	@RequestMapping(value = "sendMail", method = RequestMethod.POST)
+	String sendMail(@AuthenticationPrincipal LoginUserDetails loginUserDetails, EmailSendForm emailSendForm) {
+		amicomMemberService.sendMail(loginUserDetails.getUsername(), emailSendForm);
+		return "success";
 	}
 }

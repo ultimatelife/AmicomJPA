@@ -1,5 +1,6 @@
 package com.amicom.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.amicom.common.OftenData;
 import com.amicom.controller.form.BoardForm;
+import com.amicom.dao.AmicomMember;
 import com.amicom.dao.BoardChart;
 import com.amicom.dao.NormalBoard;
 import com.amicom.dao.en.BoardType;
 import com.amicom.repository.AmicomMemberRepository;
 import com.amicom.repository.NormalBoardRepository;
+import com.amicom.service.mail.MailMail;
 
 @Service
 public class NormalBoardService {
@@ -24,8 +27,12 @@ public class NormalBoardService {
 	
 	@Autowired
 	AmicomMemberRepository amicomMemberRepository;
+	
+	@Autowired
+	MailMail mailMail;
 
 	public List<NormalBoard> list(String boardName, Pageable pageable) {
+		System.out.println(boardName);
 		return normalBoardRepository.findByBoardName(new BoardChart(boardName), pageable);
 	}
 
@@ -46,6 +53,14 @@ public class NormalBoardService {
 
 		normalBoardRepository.save(normalBoard);
 
+		
+		//Send Mail if board's name is '공지사항'
+		if(normalBoardForm.getBoardName().equals("공지사항")){
+			List<AmicomMember> allMember = amicomMemberRepository.findAll();
+			String[] allMemberUsername = allMember.stream().map(amicomMember -> amicomMember.getUsername()).toArray(String[]::new);
+			mailMail.sendMail(username, allMemberUsername, "AMICOM 공지사항 : " + normalBoard.getTitle(), normalBoard.getContent());
+		}
+		
 		try {
 			System.out.println("test : " + normalBoardForm.getMultipartFiles().get(0));
 			normalFileMetaService.insert(normalBoard, normalBoardForm.getBoardName(), normalBoard.getMultipartFiles());
@@ -64,7 +79,7 @@ public class NormalBoardService {
 
 	public List<NormalBoard> allList(String boardName) {
 //		List<NormalBoard> list = normalBoardRepository.findByBoardName(new BoardChart(boardName));
-		List<NormalBoard> list = normalBoardRepository.findAll();
+		List<NormalBoard> list = normalBoardRepository.findByBoardName(new BoardChart(boardName, BoardType.NormalBoard));
 		return list;
 	}
 

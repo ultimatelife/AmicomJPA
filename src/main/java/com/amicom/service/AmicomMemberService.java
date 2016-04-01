@@ -8,15 +8,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.amicom.common.OftenData;
+import com.amicom.controller.form.EmailSendForm;
 import com.amicom.controller.form.Login;
 import com.amicom.dao.AmicomMember;
 import com.amicom.repository.AmicomMemberRepository;
+import com.amicom.service.mail.MailMail;
 import com.google.common.base.Optional;
 
 @Service
 public class AmicomMemberService {
 	@Autowired
 	AmicomMemberRepository amicomMemberRepository;
+	
+	@Autowired
+	MailMail mailMail;
 
 	public boolean insert(AmicomMember amicomMember) {
 		if (!isDuplidate(amicomMember.getUsername())) {
@@ -60,5 +65,11 @@ public class AmicomMemberService {
 
 	public void confirm(String uuid) {
 		amicomMemberRepository.confirm(uuid);
+	}
+	
+	
+	public void sendMail(String username, EmailSendForm emailSendForm) {
+		String[] tos = emailSendForm.getTo().stream().toArray(String[]::new);
+		mailMail.sendMail(username, tos, emailSendForm.getSubject(), emailSendForm.getContent());
 	}
 }
