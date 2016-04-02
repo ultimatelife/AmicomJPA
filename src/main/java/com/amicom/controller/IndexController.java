@@ -26,4 +26,10 @@ public class IndexController {
 		model.addAttribute("userInfo", principal.getName());
 		return "index";
 	}
+	
+	@RequestMapping("/")
+	String noIndex(){
+		return "redirect:index";
+	}
+	
 }
