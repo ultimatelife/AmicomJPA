@@ -1,0 +1,319 @@
+-- MySQL dump 10.13  Distrib 5.7.13, for osx10.11 (x86_64)
+--
+-- Host: localhost    Database: amicomjpa
+-- ------------------------------------------------------
+-- Server version	5.7.13
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `amicom_member`
+--
+
+DROP TABLE IF EXISTS `amicom_member`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `amicom_member` (
+  `username` varchar(255) NOT NULL,
+  `authority` varchar(255) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `cellphone` varchar(255) NOT NULL,
+  `enabled` bit(1) NOT NULL,
+  `job` varchar(255) DEFAULT NULL,
+  `major` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `obyb` varchar(255) NOT NULL,
+  `password` varchar(20) NOT NULL,
+  `senior` varchar(255) DEFAULT NULL,
+  `student_number` varchar(255) NOT NULL,
+  `time_stamp` datetime DEFAULT NULL,
+  `uuid` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `amicom_member`
+--
+
+LOCK TABLES `amicom_member` WRITE;
+/*!40000 ALTER TABLE `amicom_member` DISABLE KEYS */;
+INSERT INTO `amicom_member` VALUES ('ultimacy@ajou.ac.kr','ROLE_USER','2016-09-15','1064868101','','임원','소프트웨어공학부','Kunwoo','yb','drama0708!@','10','201021600','2016-09-25 08:06:29','094cdb6f-3134-403b-9bfb-d8629dd9aab2'),('ultimatelife@nate.com','ROLE_USER','2016-08-07','1064868101','','임원','소프트웨어공학부','김건우','yb','drama0708','37','201021600','2016-09-27 20:38:11','29315e9a-afd8-459e-848e-60fa5f8853b6');
+/*!40000 ALTER TABLE `amicom_member` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `board_chart`
+--
+
+DROP TABLE IF EXISTS `board_chart`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `board_chart` (
+  `board_name` varchar(255) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`board_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `board_chart`
+--
+
+LOCK TABLES `board_chart` WRITE;
+/*!40000 ALTER TABLE `board_chart` DISABLE KEYS */;
+INSERT INTO `board_chart` VALUES ('C언어','NormalBoard'),('Hadoop','NormalBoard'),('HomeComing Day','ImageBoard'),('JAVA','NormalBoard'),('MT','ImageBoard'),('공지사항','Notice'),('창립제','ImageBoard');
+/*!40000 ALTER TABLE `board_chart` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `hibernate_sequences`
+--
+
+DROP TABLE IF EXISTS `hibernate_sequences`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hibernate_sequences` (
+  `sequence_name` varchar(255) DEFAULT NULL,
+  `sequence_next_hi_value` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `hibernate_sequences`
+--
+
+LOCK TABLES `hibernate_sequences` WRITE;
+/*!40000 ALTER TABLE `hibernate_sequences` DISABLE KEYS */;
+INSERT INTO `hibernate_sequences` VALUES ('abstract_board',4),('abstract_file_meta',3),('abstract_reply',4);
+/*!40000 ALTER TABLE `hibernate_sequences` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `image_board`
+--
+
+DROP TABLE IF EXISTS `image_board`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `image_board` (
+  `board_id` int(11) NOT NULL,
+  `content` varchar(255) NOT NULL,
+  `time_stamp` datetime DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `amicom_memberid` varchar(255) NOT NULL,
+  `board_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`board_id`),
+  KEY `FK_b779kx15r9a06bcnmpfulkhbs` (`amicom_memberid`),
+  KEY `FK_swynl9nfdlrlji6k6gd300m3f` (`board_name`),
+  CONSTRAINT `FK_b779kx15r9a06bcnmpfulkhbs` FOREIGN KEY (`amicom_memberid`) REFERENCES `amicom_member` (`username`),
+  CONSTRAINT `FK_swynl9nfdlrlji6k6gd300m3f` FOREIGN KEY (`board_name`) REFERENCES `board_chart` (`board_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `image_board`
+--
+
+LOCK TABLES `image_board` WRITE;
+/*!40000 ALTER TABLE `image_board` DISABLE KEYS */;
+INSERT INTO `image_board` VALUES (3,'Test','2016-09-27 22:16:06','Test','ultimatelife@nate.com','창립제'),(32768,'Show','2016-09-28 00:03:56','Show','ultimatelife@nate.com','창립제'),(65536,'Show','2016-09-28 01:27:50','Show','ultimatelife@nate.com','창립제'),(65537,'Show','2016-09-28 01:38:25','Show','ultimatelife@nate.com','창립제');
+/*!40000 ALTER TABLE `image_board` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `image_file_meta`
+--
+
+DROP TABLE IF EXISTS `image_file_meta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `image_file_meta` (
+  `file_metaid` int(11) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `file_size` varchar(255) NOT NULL,
+  `file_type` varchar(255) NOT NULL,
+  `time_stamp` datetime DEFAULT NULL,
+  `boardid` int(11) NOT NULL,
+  PRIMARY KEY (`file_metaid`),
+  UNIQUE KEY `UK_e74qcxk2himojv3bd708dxx35` (`boardid`),
+  CONSTRAINT `FK_e74qcxk2himojv3bd708dxx35` FOREIGN KEY (`boardid`) REFERENCES `image_board` (`board_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `image_file_meta`
+--
+
+LOCK TABLES `image_file_meta` WRITE;
+/*!40000 ALTER TABLE `image_file_meta` DISABLE KEYS */;
+INSERT INTO `image_file_meta` VALUES (2,'12256728_1633803790216677_1853790898_n.jpg','116007','image/jpeg','2016-09-27 22:16:06',3),(32768,'VPMSlYY.jpg','224275','image/jpeg','2016-09-28 00:03:56',32768),(65536,'KakaoTalk_Photo_2016-09-20-16-51-18.jpeg','149617','image/jpeg','2016-09-28 01:27:50',65536),(65537,'LKM3_2048.png','1135597','image/png','2016-09-28 01:38:25',65537);
+/*!40000 ALTER TABLE `image_file_meta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `image_reply`
+--
+
+DROP TABLE IF EXISTS `image_reply`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `image_reply` (
+  `reply_id` int(11) NOT NULL,
+  `content` varchar(255) NOT NULL,
+  `time_stamp` datetime DEFAULT NULL,
+  `username` varchar(255) NOT NULL,
+  `boardid` int(11) NOT NULL,
+  PRIMARY KEY (`reply_id`),
+  KEY `FK_dkwlowi3o9lwjhmvgyg37au13` (`boardid`),
+  KEY `FK_29wvgjwy10g1hcm6yjy0xocmh` (`username`),
+  CONSTRAINT `FK_29wvgjwy10g1hcm6yjy0xocmh` FOREIGN KEY (`username`) REFERENCES `amicom_member` (`username`),
+  CONSTRAINT `FK_dkwlowi3o9lwjhmvgyg37au13` FOREIGN KEY (`boardid`) REFERENCES `image_board` (`board_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `image_reply`
+--
+
+LOCK TABLES `image_reply` WRITE;
+/*!40000 ALTER TABLE `image_reply` DISABLE KEYS */;
+INSERT INTO `image_reply` VALUES (65539,'ㅁㄴㅇㄹ','2016-10-03 16:59:30','ultimatelife@nate.com',3),(98307,'So What','2016-10-03 17:19:40','ultimacy@ajou.ac.kr',3);
+/*!40000 ALTER TABLE `image_reply` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `login`
+--
+
+DROP TABLE IF EXISTS `login`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `login` (
+  `username` varchar(255) NOT NULL,
+  `password` varchar(40) NOT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `login`
+--
+
+LOCK TABLES `login` WRITE;
+/*!40000 ALTER TABLE `login` DISABLE KEYS */;
+/*!40000 ALTER TABLE `login` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `normal_board`
+--
+
+DROP TABLE IF EXISTS `normal_board`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `normal_board` (
+  `board_id` int(11) NOT NULL,
+  `content` varchar(255) NOT NULL,
+  `time_stamp` datetime DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `amicom_memberid` varchar(255) NOT NULL,
+  `board_name` varchar(255) DEFAULT NULL,
+  `highlight` bit(1) NOT NULL,
+  PRIMARY KEY (`board_id`),
+  KEY `FK_iv7jolxyqvmbckfps5pepxvy0` (`amicom_memberid`),
+  KEY `FK_nt2idncrc6iq40hvcw9w0tt0m` (`board_name`),
+  CONSTRAINT `FK_iv7jolxyqvmbckfps5pepxvy0` FOREIGN KEY (`amicom_memberid`) REFERENCES `amicom_member` (`username`),
+  CONSTRAINT `FK_nt2idncrc6iq40hvcw9w0tt0m` FOREIGN KEY (`board_name`) REFERENCES `board_chart` (`board_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `normal_board`
+--
+
+LOCK TABLES `normal_board` WRITE;
+/*!40000 ALTER TABLE `normal_board` DISABLE KEYS */;
+INSERT INTO `normal_board` VALUES (98305,'SoWhat','2016-10-03 15:36:25','SoWhat','ultimacy@ajou.ac.kr','java','\0'),(98306,'So','2016-10-03 15:36:59','So','ultimacy@ajou.ac.kr','hadoop','\0');
+/*!40000 ALTER TABLE `normal_board` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `normal_file_meta`
+--
+
+DROP TABLE IF EXISTS `normal_file_meta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `normal_file_meta` (
+  `file_metaid` int(11) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `file_size` varchar(255) NOT NULL,
+  `file_type` varchar(255) NOT NULL,
+  `time_stamp` datetime DEFAULT NULL,
+  `boardid` int(11) NOT NULL,
+  PRIMARY KEY (`file_metaid`),
+  KEY `FK_rmu8w3agby8mg9d2yp7rly69c` (`boardid`),
+  CONSTRAINT `FK_rmu8w3agby8mg9d2yp7rly69c` FOREIGN KEY (`boardid`) REFERENCES `normal_board` (`board_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `normal_file_meta`
+--
+
+LOCK TABLES `normal_file_meta` WRITE;
+/*!40000 ALTER TABLE `normal_file_meta` DISABLE KEYS */;
+/*!40000 ALTER TABLE `normal_file_meta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `normal_reply`
+--
+
+DROP TABLE IF EXISTS `normal_reply`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `normal_reply` (
+  `reply_id` int(11) NOT NULL,
+  `content` varchar(255) NOT NULL,
+  `time_stamp` datetime DEFAULT NULL,
+  `username` varchar(255) NOT NULL,
+  `boardid` int(11) NOT NULL,
+  PRIMARY KEY (`reply_id`),
+  KEY `FK_9ryofu4vvihdqssjcbehe145e` (`boardid`),
+  KEY `FK_dhtroi8euv68ig09j3a28qll7` (`username`),
+  CONSTRAINT `FK_9ryofu4vvihdqssjcbehe145e` FOREIGN KEY (`boardid`) REFERENCES `normal_board` (`board_id`),
+  CONSTRAINT `FK_dhtroi8euv68ig09j3a28qll7` FOREIGN KEY (`username`) REFERENCES `amicom_member` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `normal_reply`
+--
+
+LOCK TABLES `normal_reply` WRITE;
+/*!40000 ALTER TABLE `normal_reply` DISABLE KEYS */;
+INSERT INTO `normal_reply` VALUES (65536,'So What','2016-10-03 16:54:30','ultimacy@ajou.ac.kr',98305),(65538,'dk','2016-10-03 16:57:39','ultimatelife@nate.com',98305);
+/*!40000 ALTER TABLE `normal_reply` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2016-10-03 19:25:05

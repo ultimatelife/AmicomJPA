@@ -15,11 +15,10 @@
 	<script
 	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-	<script
-	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
-	<script
-	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-resource.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+	
 	<script th:src="@{/js/dirPagination.js}"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
 
 </head>
 <body ng-app='myApp' ng-controller="controller">
@@ -93,7 +92,9 @@
 		       direction-links="true"
 		       boundary-links="true" >
 		    </dir-pagination-controls>             
-        </div>		
+        </div>
+        
+        		
 </div>
 
 <script th:inline="javascript">
@@ -101,10 +102,12 @@
 	var myModule = angular.module('myApp', [ 'ngResource', 'angularUtils.directives.dirPagination']);
 	
 	myModule.controller('controller', function($scope, $resource, $location) {
-		var res = $resource('http://localhost:8080/amicommember/list');
+		var res = $resource('http://localhost:8060/amicommember/list');
 		res.query(function(data) {
 			$scope.rows = data;
 		});
+		
+		
 		
 		$scope.cuurentUserAuthority = [[${userAuthority}]];
 		

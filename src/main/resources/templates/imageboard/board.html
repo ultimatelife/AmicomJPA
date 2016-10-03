@@ -31,8 +31,8 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		</h1>
 			<div class="row" ng-repeat="row in rows">
 				<div class="col-md-7">
-					<a href="http://localhost:8080/img/{{boardName}}/{{row.boardId}}/{{row.fileMetas.fileName}}">
-						<img class="thumbnail img-responsive" ng-src="http://localhost:8080/img/{{boardName}}/{{row.boardId}}/{{row.fileMetas.fileName}}"/>
+					<a href="http://localhost:8060/img/{{boardName}}/{{row.boardId}}/{{row.fileMetas.fileName}}">
+						<img class="thumbnail img-responsive" ng-src="http://localhost:8060/img/{{boardName}}/{{row.boardId}}/{{row.fileMetas.fileName}}"/>
 					</a>
 				</div>
 				
@@ -63,7 +63,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<h4>시간 : {{currentRow.timeStamp}}</h4>
 						</div>
 						<div class="modal-body">
-							<img class="thumbnail img-responsive" ng-src="http://localhost:8080/img/{{boardName}}/{{currentRow.boardId}}/{{currentRow.fileMetas.fileName}}"/>
+							<img class="thumbnail img-responsive" ng-src="http://localhost:8060/img/{{boardName}}/{{currentRow.boardId}}/{{currentRow.fileMetas.fileName}}"/>
 							
 							<div class="form-group">
 								<label for="comment">Comment</label>
@@ -77,9 +77,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 									<table class="table">
 										<tbody>
 											<tr ng-repeat="reply in currentRow.replys">
-												<td class="col-md-1">{{currentRow.amicomMember.name}}</td>
-												<td class="col-md-4">{{currentRow.content}}</td>
-												<td class="col-md-1"><span ng-click="deleteReply(reply.replyId, $index)" class="glyphicon glyphicon-minus"></span></td>
+												<td class="col-md-1">{{reply.amicomMember.name}}</td>
+												<td class="col-md-4">{{reply.content}}</td>
+												<td class="col-md-1"><span ng-click="deleteReply(reply.amicomMember.username, reply.replyId, $index)" class="glyphicon glyphicon-minus"></span></td>
 											</tr>
 										</tbody>
 									</table>      
@@ -162,7 +162,7 @@ var myModule = angular.module('myApp', [ 'ngResource']);
 
 myModule.controller('controller', function($scope, $resource, $location, $http) {
 	var url = $location.absUrl();
-	
+		
 	$scope.currentUsername = [[${userInfo}]];
 	$scope.cuurentUserAuthority = [[${userAuthority}]]; 
 
@@ -176,36 +176,41 @@ myModule.controller('controller', function($scope, $resource, $location, $http) 
 	}
 	
 	$scope.sendReply = function(){
-		$http.post('http://localhost:8080/imagereply/' + $scope.currentRow.boardId, {"content" : $scope.replyContent}).
+		$http.post('http://localhost:8060/imagereply/' + $scope.currentRow.boardId, {"content" : $scope.replyContent}).
 		success(function (data, status, headers, config){
 			$scope.currentRow.replys.push(data);
 			alert("추가되었습니다.");
 		});
 	}
 	
-	$scope.deleteReply = function(replyId, replyIndex){
-		$http.delete("http://localhost:8080/imagereply/delete/" + replyId)
-		.success(function(data, status, headers, config) {
-		});
-		$scope.currentRow.replys.splice(replyIndex, 1)
+	$scope.deleteReply = function(replyUsername, replyId, index){
+		if(replyUsername == $scope.currentUsername){
+			$http.delete("http://localhost:8060/imagereply/delete/" + replyId)
+			.success(function(data, status, headers, config) {
+			});
+			$scope.currentRow.replys.splice(index, 1)	
+		}else{
+			alert("권한이 없습니다.")
+		}
+		
 	}
 	
 	/* $scope.delete = funtion(row, boardId){
 		var index = $scope.rows.index(row);
 		$scope.rows.splice(index, 1);
 		
-		$http.post("http://localhost:8080/imageboard/delete/" + $scope.boardName, {"boardId" : boardId}).
+		$http.post("http://localhost:8060/imageboard/delete/" + $scope.boardName, {"boardId" : boardId}).
 		success(function(data){
 			$scope.allFiles = data 
 		});
 	} */
 	
-	var res = $resource("http://localhost:8080/imageboard/page/" + $scope.boardName + "?page=" + 0 + "&size=10");
+	var res = $resource("http://localhost:8060/imageboard/page/" + $scope.boardName + "?page=" + 0 + "&size=10");
 	res.query(function(data) {
 		$scope.rows = data;
 	});
 	
-	res = $resource("http://localhost:8080/imageboard/size/" + $scope.boardName);
+	res = $resource("http://localhost:8060/imageboard/size/" + $scope.boardName);
 	res.query(function(data) {
 		var rest = data % 10;
 		var share = Math.floor(data / 10);
@@ -225,7 +230,7 @@ myModule.controller('controller', function($scope, $resource, $location, $http) 
 	}
 	
 	$scope.changeRow = function(page){
-		$http.get("http://localhost:8080/imageboard/page/" + $scope.boardName + "?page=" + page + "&size=10").
+		$http.get("http://localhost:8060/imageboard/page/" + $scope.boardName + "?page=" + page + "&size=10").
 		success(function(data){
 			$scope.rows = data;
 // 			$scope.allFiles = data
@@ -235,12 +240,12 @@ myModule.controller('controller', function($scope, $resource, $location, $http) 
 	};
 	
 	/*
-	var res = $resource("http://localhost:8080/imageboard/size/" + $scope.boardName);
+	var res = $resource("http://localhost:8060/imageboard/size/" + $scope.boardName);
 	res.query(function(data) {
 		$scope.rows = data;
 	});
 	
-	$http.get("http://localhost:8080/imageboard/size/" + $scope.boardName).
+	$http.get("http://localhost:8060/imageboard/size/" + $scope.boardName).
 	success(function(data){
 		$scope.allFiles = data 
 	});*/
@@ -250,6 +255,9 @@ myModule.controller('controller', function($scope, $resource, $location, $http) 
 
 <script type="text/javascript">
 //<![CDATA[
+      
+           
+           
 var dropzone1 = document.getElementById('file1');
 var dropzone2 = document.getElementById('file2');
 setDnDhandler(dropzone1);

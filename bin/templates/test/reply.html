@@ -49,7 +49,7 @@
 			$scope.test = "test";
 			$scope.content = "asdf";
 			
-			var replysQuery = $resource('http://localhost:8080/reply/' + 131072);
+			var replysQuery = $resource('http://localhost:8060/reply/' + 131072);
 			
 			$scope.listReply = function(){
 				replysQuery.query(function(data){
@@ -66,7 +66,7 @@
 // 			};
 			
 	 		$scope.sendData = function () {
-				$http.post('http://localhost:8080/reply/32768', {"content" : $scope.replyContent}).
+				$http.post('http://localhost:8060/reply/32768', {"content" : $scope.replyContent}).
 				success(function (data, status, headers, config){
 					$scope.testReplyReceive = data;
 				});

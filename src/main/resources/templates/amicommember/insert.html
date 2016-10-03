@@ -18,9 +18,8 @@
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
   	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	
-	<script th:href="@{js/angular.min.js}"></script> 
 	
-	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
 	
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"></link>
 	<script src="//code.jquery.com/jquery.min.js"></script>
@@ -38,10 +37,10 @@
 
 </head>
 
-<body>
+<body ng-app="myApp">
     <div class="container">
-		<form class="form-horizontal" th:action="@{/amicommember/insert}" method="post" name="myForm" ng-app="myApp" ng-controller="validateCtrl" >
-			<div class="form-group">
+    	<form class="form-horizontal" th:action="@{/amicommember/insert}" method="post" name="myForm" ng-controller="validateCtrl" >
+    		<div class="form-group">
 				<label class="control-label" for="email">username</label>
 				<div class="col">
 					<input type="email" class="form-control" placeholder="E-mail" name="username" ng-model="username" ng-required="true" ng-keyup= "checkDuplicate()" />
@@ -123,6 +122,12 @@
 						<option value="소프트웨어공학부">소프트웨어공학부</option>
 						<option value="전자공학뷰">전자공학부</option>
 						<option value="미디어학부">미디어학부</option>
+						<option value="화학공학과">화학공학과</option>
+						<option value="생명공학과">생명공학과</option>
+						<option value="토목학과">토목학과</option>
+						<option value="기계공학과">기계공학과</option>
+						<option value="인문대">인문대</option>
+						<option value="자연대">자연대</option>
 					</select>					
 						<span style="color:red" ng-show="myForm.major.$dirty">
 							<span style="color:red" ng-show="myForm.major.$error.required">이름을 입력하시오</span>
@@ -143,7 +148,7 @@
 			<div class="form-group">
 				<label class="control-label" for="text">직책</label>
 				<div class="col">
-					<select class="form-control" name="obyb" ng-model="obyb" ng-required="true">
+					<select class="form-control" name="job" ng-model="job" ng-required="true">
 						<option value="임원">임원</option>
 						<option default="true" value="회원">회원</option>
 					</select>					
@@ -165,21 +170,21 @@
 					<input type="submit" value="Submit" class="btn btn-default" ng-disabled="isDuplicate"/>					
 				</div>
 			</div>			
-			
-		</form>
-    </div>
+    	</form>
+	</div>
 </body>
-
+	
+	
 <script th:inline="javascript">
 //<![CDATA[
-	var app = angular.module('myApp', []);
-	app.controller('validateCtrl', function($scope,$http) {
+	var myApp = angular.module('myApp', []);
+	myApp.controller('validateCtrl', ['$scope', function ($scope,$http) {    
 		$scope.seniors = [];
 		var enterYear = new Date().getFullYear() - 1978;
 		
 		for(var i = 0 ; i < enterYear-1 ; i++){
 			$scope.seniors.push(i+1);			
-		}
+		}		
 		$scope.seniors.reverse();
 		
 		var yearRange =[];
@@ -207,17 +212,17 @@
 			'studentNumber' : $scope.studentNumber,
 			'major' : $scope.major,
 			'obyb' : $scope.obyb,
-			'senior' : $scope.senior
+			'senior' : $scope.senior,
+			'job' : $scope.job
 		}];
 		
 		$scope.checkDuplicate = function(){
-			$http.get("http://localhost:8080/amicommember/isDuplicate?username=" + $scope.username)
+			$http.get("http://localhost:8060/amicommember/isDuplicate?username=" + $scope.username)
 			.then(function(response) {
 				$scope.isDuplicate = response.data;
 			});
-		};
-	});	
+		};		
+	}]);
 // ]]>
 </script>
-	
 </html>

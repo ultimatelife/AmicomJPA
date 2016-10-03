@@ -44,16 +44,16 @@ public class ImageReplyController {
 	ImageReply save(@PathVariable String boardId, @RequestBody @Validated ReplyForm replyForm, @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 		AmicomMember amicomMember = loginUserDetails.getUser();
 		
-		System.out.println(amicomMember.getUsername());
-		System.out.println(amicomMember.getName());
-		System.out.println(replyForm.getContent());
-
 		ImageReply imageReply = new ImageReply();
 		imageReply.setAmicomMember(amicomMember);
 		imageReply.setBoard(new ImageBoard(Integer.parseInt(boardId)));
 		imageReply.setTimeStamp(OftenData.getCurrentTimestamp());
 		imageReply.setContent(replyForm.getContent());
 		imageReplyService.insert(imageReply);
+		
+		System.out.println(amicomMember.getUsername());
+		System.out.println(amicomMember.getName());
+		System.out.println(replyForm.getContent());
 		return imageReply;
 	}
 	

@@ -21,7 +21,7 @@
 	var app = angular.module('myApp', []);
 	app.controller('validateCtrl', function($scope,$http) {
 		$scope.checkDuplicate = function(){
-			$http.get("http://localhost:8080/amicommember/isDuplicate?username=" + $scope.username)
+			$http.get("http://localhost:8060/amicommember/isDuplicate?username=" + $scope.username)
 			.then(function(response) {
 				$scope.myWelcome = response.data;
 			});

@@ -256,23 +256,23 @@ myModule.controller('controller', function($scope, $resource, $location) {
 	var url = $location.absUrl();
 	$scope.boardName = decodeURI(url.split('/')[4]);
 	
-//          $http.get("http://localhost:8080/imageboard/page/" + boardName + "?" + "page=0&size=10").
+//          $http.get("http://localhost:8060/imageboard/page/" + boardName + "?" + "page=0&size=10").
 //          success(function(data){
 //              $scope.row = data
 //          });
 
-var res = $resource("http://localhost:8080/imageboard/list/" + $scope.boardName + "?" + "page=0&size=10");
+var res = $resource("http://localhost:8060/imageboard/list/" + $scope.boardName + "?" + "page=0&size=10");
 res.query(function(data) {
 	$scope.rows = data;
 });
 
-var res = $resource("http://localhost:8080/imageboard/size/" + $scope.boardName);
+var res = $resource("http://localhost:8060/imageboard/size/" + $scope.boardName);
 res.query(function(data) {
 	$scope.rows = data;
 });
 
 
-$http.get("http://localhost:8080/imageboard/size/" + $scope.boardName).
+$http.get("http://localhost:8060/imageboard/size/" + $scope.boardName).
 success(function(data){
 	$scope.allFiles = data
 });

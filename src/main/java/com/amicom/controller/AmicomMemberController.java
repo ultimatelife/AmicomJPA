@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,6 +81,7 @@ public class AmicomMemberController {
 		return "amicommember/board";
 	}
 	
+	@CrossOrigin(origins = "http://localhost:8060")
 	@ResponseBody
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	List<AmicomMember> list() {
