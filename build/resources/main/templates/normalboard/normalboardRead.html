@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	>
+<head>
+	<meta charset="UTF-8"></meta>
+	<title></title>
+	<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
+	<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+	<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+	<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-resource.min.js"></script>
+</head>
+<body ng-app='myApp' ng-controller="controller">
+	<div style="height: 100px">
+		<div th:include="headbar"></div>
+	</div>
+	
+<div class="container">
+  <div class="panel-group" ng-repeat="row in rows">
+    <div class="panel panel-primary">
+      <div class="panel-heading">Title</div>
+      <div class="panel-body">{{row.title}}</div>
+    </div>
+
+    <div class="panel panel-success">
+      <div class="panel-heading">Username</div>
+      <div class="panel-body">{{row.amicomMember.username}}</div>
+    </div>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">Name</div>
+      <div class="panel-body">{{row.amicomMember.name}}</div>
+    </div>
+
+    <div class="panel panel-danger">
+      <div class="panel-heading">Files</div>
+      <div class="panel-body" ng-repeat="file in row.fileMetas">
+      	<a download="" th:href="@{/NormalFile/{{row.boardName.boardName}}/{{row.boardId}}/{{file.fileName}}}">
+      		{{file.fileName}} <br/>
+    	</a><br/>
+      </div>
+    </div>
+    
+    <div class="panel panel-warning">
+      <div class="panel-heading">Content</div>
+      <div class="panel-body" style="height: 300px">{{row.content}}</div>
+    </div>
+
+    <div class="panel panel-warning" ng-show="row.amicomMember.username == currentUsername">
+      <div class="panel-body">
+		<form method="post" action="/normalboard/delete">
+			<div class="form-group">
+				<input type="hidden" name="boardName" value="{{row.boardName.boardName}}" />
+				<input type="hidden" name="boardId" value="{{row.boardId}}" />
+				<input type="submit" class="btn btn-primary" value = "글삭제"/>
+			</div>
+		</form>
+      </div>
+    </div>
+    
+  </div>
+  
+    <div class="panel panel-info">
+        <form>
+	        <div class="form-group">
+			      <label for="comment">Comment</label>
+			      <textarea class="form-control" rows="3" id="comment" ng-model="$parent.replyContent" ng-required="true"></textarea>
+			      <input type="submit" class ="btn btn-primary" ng-click="sendReply()" value="Add Comment"></input>
+	    	</div>
+        </form>
+    </div>
+      
+   <div class="panel panel-warning">
+      <div class="panel-heading">Replys</div>
+      <div class="panel-body">
+		  <table class="table">
+		    <tbody>
+		      <tr ng-repeat="reply in replys">
+		        <td class="col-md-1">{{reply.amicomMember.name}}</td>
+		        <td class="col-md-4">{{reply.content}}</td>
+		        <td class="col-md-1"><span ng-click="deleteReply(reply.amicomMember.username, reply.replyId, $index)" class="glyphicon glyphicon-minus"></span></td>
+		      </tr>
+		    </tbody>
+		  </table>      
+      </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+//<![CDATA[
+	var myModule = angular.module('myApp', [ 'ngResource' ]);
+	
+	myModule.controller('controller', function($scope, $resource, $location, $http) {
+			var url = $location.absUrl();
+			$scope.currentUsername = [[${userInfo}]];
+			
+			$scope.boardId = url.split('/')[5]
+			$scope.boardName = url.split('/')[6];
+			
+			$http.get('http://localhost:8060/normalboard/read/detail/' + $scope.boardId)
+		    .then(function (response) {$scope.rows = response.data});
+			
+			$http.get("http://localhost:8060/reply/" + $scope.boardId)
+		    .then(function (response) {$scope.replys = response.data});
+			
+	 		$scope.sendReply = function () {
+	 			$http.post('http://localhost:8060/reply/' + $scope.boardId, {"content" : $scope.replyContent}).
+				success(function (data, status, headers, config){
+					$scope.replys.push(data);
+					alert("추가되었습니다.");
+				});
+			};
+			
+			$scope.deleteReply = function(replyUsername, replyId, index){
+				if(replyUsername == $scope.currentUsername){
+					alert("삭제 할수있습니다.")
+					$http.delete('http://localhost:8060/reply/delete/' + replyId).
+					success(function (data, status, headers, config) {
+					});
+					
+					$scope.replys.splice(index,1); 
+				}else{
+					alert("권한이 없습니다.")
+				}
+			}
+		})
+//]]>
+</script>
+	
+</body>
+</html>

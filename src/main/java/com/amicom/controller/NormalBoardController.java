@@ -28,7 +28,7 @@ import com.amicom.service.security.LoginUserDetails;
 
 @Controller
 @RequestMapping("normalboard")
-@SessionAttributes({"userInfo",""})
+@SessionAttributes({ "userInfo", "" })
 public class NormalBoardController {
 
 	@Autowired

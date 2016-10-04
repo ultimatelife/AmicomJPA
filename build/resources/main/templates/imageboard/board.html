@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html
+xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8"></meta>
+	<title></title>
+	<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
+	<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-resource.min.js"></script>
+	<script th:src="@{/js/dirPagination.js}"></script>
+
+</head>
+
+<body ng-app='myApp' ng-controller="controller">
+	<div style="height: 100px">
+		<div th:include="headbar"></div>
+	</div>
+	
+	<div class="container">
+		<h1>{{boardName}}
+			<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal1">Write</button>
+		</h1>
+			<div class="row" ng-repeat="row in rows">
+				<div class="col-md-7">
+					<a href="http://localhost:8060/img/{{boardName}}/{{row.boardId}}/{{row.fileMetas.fileName}}">
+						<img class="thumbnail img-responsive" ng-src="http://localhost:8060/img/{{boardName}}/{{row.boardId}}/{{row.fileMetas.fileName}}"/>
+					</a>
+				</div>
+				
+				<div class="col-md-5">
+					<h3>{{row.title}}</h3>
+					<h4>이름 : {{row.amicomMember.name}}</h4>
+					<p>내용 : {{row.content}}</p>
+					
+					<form action="/imageboard/delete" th:method="post" ng-if="currentUsername == row.amicomMember.username">
+						<input type="hidden" name="boardName" value="{{row.boardName.boardName}}" />
+						<input type="hidden" name="boardId" value="{{row.boardId}}" />
+						<input class="btn-md glyphicon glyphicon-chevron-right btn btn-info" type="submit" value="Delete"/>
+					</form>
+					<button class="btn-md glyphicon glyphicon-chevron-right btn btn-info" data-toggle="modal" data-target="#imageModal" ng-click="changeCurrentRow(row)">More</button>
+					
+					
+				</div>
+			</div>
+
+			<!-- Modal -->
+			<div class="modal fade" id="imageModal" role="dialog">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h3>{{currentRow.title}}</h3>
+							<h4>이름 : {{currentRow.amicomMember.name}}</h4>
+							<h4>시간 : {{currentRow.timeStamp}}</h4>
+						</div>
+						<div class="modal-body">
+							<img class="thumbnail img-responsive" ng-src="http://localhost:8060/img/{{boardName}}/{{currentRow.boardId}}/{{currentRow.fileMetas.fileName}}"/>
+							
+							<div class="form-group">
+								<label for="comment">Comment</label>
+								<textarea class="form-control" rows="3" id="comment" ng-model="$parent.replyContent" ng-required="true"></textarea>
+								<input type="submit" class ="btn btn-primary" ng-click="sendReply()" value="Add Comment"></input>
+							</div>									
+							
+							<div class="panel panel-warning">
+								<div class="panel-heading">Replys</div>
+								<div class="panel-body">
+									<table class="table">
+										<tbody>
+											<tr ng-repeat="reply in currentRow.replys">
+												<td class="col-md-1">{{reply.amicomMember.name}}</td>
+												<td class="col-md-4">{{reply.content}}</td>
+												<td class="col-md-1"><span ng-click="deleteReply(reply.amicomMember.username, reply.replyId, $index)" class="glyphicon glyphicon-minus"></span></td>
+											</tr>
+										</tbody>
+									</table>      
+								</div>
+							</div>
+							
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>		
+		<!--  Write Modal-->
+		<div class="modal fade" id="myModal1" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">글쓰기</h4>
+					</div>
+					<div class="modal-body">
+						<form th:action="@{/imageboard/insert}" th:method="post" class="dropzone" enctype="multipart/form-data"> 
+							<input type="hidden" id="boardName" name="boardName" value="{{boardName}}"/>
+							
+							<div class="form-group">
+								<label class="control-label" for="Title">Title</label>
+								<div class="col">
+									<input class="form-control" id="title" placeholder="title" name="title" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="control-label" for="content">Content</label>
+								<div class="col">
+									<textarea class="form-control" placeholder="content" id="content" name="content" rows="10" />
+								</div>
+							</div>                  
+							
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<input id="multipartFiles" validfile="" type="file" name="multipartFiles" accept="image/*" multiple="multiple" />
+								</div>
+							</div>
+							
+							<div class="modal-footer">
+								<input type="submit" value="Submit" class="btn btn-default"/>
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							</div>                  
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	  <div class="row">
+	  	<div class="col-sm-4" ></div>
+	    <div class="col-sm-8">
+		  <ul class="pagination pagination-sm">
+		    <li ng-repeat="pageNumber in paging">
+		    	<a ng-click="changeRow(pageNumber)">{{pageNumber + 1}}</a>
+		    </li>
+		  </ul>	    	
+	    </div>
+	  </div>		
+	</div>
+	
+	<button ng-click="ppp(100)">
+	asdf
+	</button>
+	<button ng-click="changeRow(1)">
+	asdf
+	</button>
+	
+	<script th:inline="javascript">
+//<![CDATA[
+           
+           
+var myModule = angular.module('myApp', [ 'ngResource']);
+
+myModule.controller('controller', function($scope, $resource, $location, $http) {
+	var url = $location.absUrl();
+		
+	$scope.currentUsername = [[${userInfo}]];
+	$scope.cuurentUserAuthority = [[${userAuthority}]]; 
+
+	$scope.changeCurrentRow = function(row){
+		$scope.currentRow = row;
+	}
+	
+	$scope.boardName = decodeURI(url.split('/')[5])
+	if($scope.boardName.charAt($scope.boardName.length - 1) == "#"){
+		$scope.boardName = $scope.boardName.substring(0, $scope.boardName.length - 1); 
+	}
+	
+	$scope.sendReply = function(){
+		$http.post('http://localhost:8060/imagereply/' + $scope.currentRow.boardId, {"content" : $scope.replyContent}).
+		success(function (data, status, headers, config){
+			$scope.currentRow.replys.push(data);
+			alert("추가되었습니다.");
+		});
+	}
+	
+	$scope.deleteReply = function(replyUsername, replyId, index){
+		if(replyUsername == $scope.currentUsername){
+			$http.delete("http://localhost:8060/imagereply/delete/" + replyId)
+			.success(function(data, status, headers, config) {
+			});
+			$scope.currentRow.replys.splice(index, 1)	
+		}else{
+			alert("권한이 없습니다.")
+		}
+		
+	}
+	
+	/* $scope.delete = funtion(row, boardId){
+		var index = $scope.rows.index(row);
+		$scope.rows.splice(index, 1);
+		
+		$http.post("http://localhost:8060/imageboard/delete/" + $scope.boardName, {"boardId" : boardId}).
+		success(function(data){
+			$scope.allFiles = data 
+		});
+	} */
+	
+	var res = $resource("http://localhost:8060/imageboard/page/" + $scope.boardName + "?page=" + 0 + "&size=10");
+	res.query(function(data) {
+		$scope.rows = data;
+	});
+	
+	res = $resource("http://localhost:8060/imageboard/size/" + $scope.boardName);
+	res.query(function(data) {
+		var rest = data % 10;
+		var share = Math.floor(data / 10);
+		var paging = new Array();
+		
+		for(var i = 0 ; i < share ; i++){
+			paging.push(i);
+		}
+		if(rest > 0){
+			paging.push(share);
+		}
+		$scope.paging = paging;
+	})
+	
+	$scope.ppp = function(data){
+		alert(data);
+	}
+	
+	$scope.changeRow = function(page){
+		$http.get("http://localhost:8060/imageboard/page/" + $scope.boardName + "?page=" + page + "&size=10").
+		success(function(data){
+			$scope.rows = data;
+// 			$scope.allFiles = data
+		}).fail(function(data) {
+			alert(data)
+		})
+	};
+	
+	/*
+	var res = $resource("http://localhost:8060/imageboard/size/" + $scope.boardName);
+	res.query(function(data) {
+		$scope.rows = data;
+	});
+	
+	$http.get("http://localhost:8060/imageboard/size/" + $scope.boardName).
+	success(function(data){
+		$scope.allFiles = data 
+	});*/
+})
+//]]>       
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+      
+           
+           
+var dropzone1 = document.getElementById('file1');
+var dropzone2 = document.getElementById('file2');
+setDnDhandler(dropzone1);
+setDnDhandler(dropzone2);
+
+function setDnDhandler(obj) {
+	obj.addEventListener("dragover", function(event) {
+		event.preventDefault();
+	}, true);
+	obj.addEventListener("drop", function(event) {
+		event.preventDefault();
+		var allTheFiles = event.dataTransfer.files;
+		for (var i=0; i<allTheFiles.length; i++) {
+			var element = document.createElement('div');
+			element.id = 'f' + i;
+			document.body.appendChild(element);
+			sendFile(allTheFiles[i], element.id);
+		}
+	}, true);
+}
+
+function sendFile(file, fileId) {
+	var xhr = new XMLHttpRequest();
+	
+	xhr.upload.addEventListener("progress", function(e) {
+		if (e.lengthComputable) {
+			var percentage = Math.round((e.loaded * 100) / e.total);
+			document.getElementById(fileId).innerHTML = file.name + ' - ' + percentage + '%';
+		}
+	}, false);
+	xhr.onreadystatechange = function() {  
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			alert(xhr.responseText);
+		}
+	};
+	xhr.upload.addEventListener("load", function(e){
+		document.getElementById(fileId).innerHTML = file.name + ' - uploaded';
+	}, false);
+	xhr.open("POST", "file/upload");
+	var fd = new FormData();
+	fd.append("file", file);
+	xhr.send(fd);
+}
+// ]]>
+</script>
+</body>
+</html>
