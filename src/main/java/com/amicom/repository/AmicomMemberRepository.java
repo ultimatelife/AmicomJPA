@@ -15,7 +15,15 @@ public interface AmicomMemberRepository extends JpaRepository<AmicomMember, Inte
 
 	AmicomMember findByUsernameAndPassword(String username, String password);
 
+	@Query("FROM AmicomMember amicomMeber WHERE amicomMeber.studentNumber = ?1 AND amicomMeber.name = ?2")
+	AmicomMember findbyStudentNumberAndName(String studentNumber, String name);
+	
+	AmicomMember findByUsernameAndStudentNumber(String username, String studentNumber);
+	
 	@Modifying
 	@Query("UPDATE AmicomMember amicomMember SET amicomMember.enabled = 1 WHERE amicomMember.uuid = ?1")
 	void confirm(String uuid);
+
+
+
 }

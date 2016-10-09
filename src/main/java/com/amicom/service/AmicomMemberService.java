@@ -72,4 +72,31 @@ public class AmicomMemberService {
 		String[] tos = emailSendForm.getTo().stream().toArray(String[]::new);
 		mailMail.sendMail(username, tos, emailSendForm.getSubject(), emailSendForm.getContent());
 	}
+
+	public String questionEmail(String studentNumber, String name) {
+		AmicomMember amicomMember = amicomMemberRepository.findbyStudentNumberAndName(studentNumber, name);
+		String result = "";
+		
+		if(amicomMember == null)
+			result = "{질못된 정보를 입력하셨습니다.}";
+		else 
+			result = new StringBuffer().append("E-mail은 ").append(amicomMember.getUsername()).append(" 입니다.").toString();
+		return result;
+	}
+
+	
+	public String questionPassword(String email, String studentNumber) {
+		AmicomMember amicomMember = amicomMemberRepository.findByUsernameAndStudentNumber(email, studentNumber);
+		String result = "";
+		
+		if (amicomMember == null){
+			result = "E-mail 과 학번이 일치하지 않습니다.";
+		} else{
+			String fromEmail[] = { amicomMember.getUsername() };
+			mailMail.sendMail("Amicom", fromEmail, "Amicom 에서 비밀번호를 보내드렸습니다.", "당신의 비밀번호는 " + amicomMember.getPassword());
+			result = "E-mail 로 비밀번호가 발송되었습니다. E-mail 을 확인해주세요.";
+		}
+		
+		return result;
+	}
 }

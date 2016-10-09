@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.amicom.controller.form.EmailSendForm;
+import com.amicom.controller.form.Question;
 import com.amicom.dao.AmicomMember;
 import com.amicom.service.AmicomMemberService;
 import com.amicom.service.mail.MailMail;
@@ -99,7 +100,22 @@ public class AmicomMemberController {
 		}
 	}
 	
-	@Async
+	@ResponseBody
+	@RequestMapping(value = "question/email", method = RequestMethod.GET)
+	Question questionEmail(@RequestParam("studentNumber") String studentNumber, @RequestParam("name") String name){				
+		System.out.println(studentNumber + " " + name);
+		String result = amicomMemberService.questionEmail(studentNumber, name);
+		return new Question(result);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "question/password", method = RequestMethod.GET)
+	Question questionPassword(@RequestParam("email") String email, @RequestParam("studentNumber") String studentNumber){				
+		System.out.println(studentNumber + " " + email);
+		String result = amicomMemberService.questionPassword(email, studentNumber);
+		return new Question(result);
+	}
+	
 	@ResponseBody
 	@RequestMapping(value = "sendMail", method = RequestMethod.POST)
 	String sendMail(@AuthenticationPrincipal LoginUserDetails loginUserDetails, EmailSendForm emailSendForm) {

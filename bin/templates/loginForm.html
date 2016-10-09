@@ -48,7 +48,9 @@
     <!-- Custom Theme JavaScript -->
     <script th:href="@{dist/js/sb-admin-2.js}"></script>
 	<script th:href="@{js/angular.min.js}"></script> 
-	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-resource.min.js"></script>
 	
 </head>
 
@@ -74,42 +76,134 @@
 	                        <a th:href="@{/amicommember/insert}" class="btn btn-lg btn-success btn-block">Join</a>                    	
                     	</form>
                     </div>
+                    
+                    
+                    
                 </div>
                 <h3 class="panel-title">Please email confirm</h3>
+                
+                <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal1">E-mail 찾기</button>
+                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal2">Password 찾기</button>
+                    
+					<div class="modal fade" id="myModal1" role="dialog">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>								
+									<h4 class="modal-title">E-mail 찾기</h4>
+								</div>
+								<div class="modal-body">
+									<div class="form-group">
+										<label class="control-label" for="studentNumber">학 번</label>
+										<div class="col">
+											<input class="form-control" ng-model="studentNumber" id="studentNumber" placeholder="studentNumber" name="studentNumber"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="control-label" for="name">이 름</label>
+										<div class="col">
+											<input class="form-control" ng-model="name" id="name" placeholder="name" name="name" />
+										</div>
+									</div>
+									<br/><br/>
+									<h3>{{questionEmailResult}}</h3>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" ng-click="sendQuestionEmail()">Send</button>									
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="modal fade" id="myModal2" role="dialog">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">Password 찾기</h4>
+								</div>
+								<div class="modal-body">
+									<div class="form-group">
+										<label class="control-label" for="email">E-mail</label>
+										<div class="col">
+											<input class="form-control" ng-model="email" id="email" placeholder="email" name="email" />
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="control-label" for="studentNumber">학번</label>
+										<div class="col">
+											<input class="form-control" ng-model="studentNumber" id="name" placeholder="name" name="name" />
+										</div>
+									</div>
+									
+									<h3>{{questionPasswordResult}}</h3>
+								</div>
+								
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" ng-click="sendQuestionPassword()">Send</button>
+								</div>
+							</div>
+						</div>
+					</div>    
             </div>
         </div>
     </div>
+    
+    
 </body>
 
 <script th:inline="javascript">
 //<![CDATA[
-// 	var app = angular.module('myApp', []);
-// 	app.controller('validateCtrl', function($scope, $http) {
-// 		$scope.username = 'drama0708@gmail.com';
-// 		$scope.password = 'drama0708';
+ 	var myModule = angular.module('myApp', [ 'ngResource']);
+ 	myModule.controller('validateCtrl', function($scope, $resource, $location, $http) {
+ 		$scope.questionEmailResult = "";
+ 		$scope.questionPasswordResult = "";
+ 		
+ 		
+ 		$scope.studentNumber = '';
+ 		$scope.name = '';
 		
-// 		$scope.login = {'username' : $scope.username,
-// 			'password' : $scope.password
-// 			};
+ 		$scope.questionEmail = {'studentNumber' : $scope.studentNumber,
+ 			'name' : $scope.name
+		};
 		
-// 		$scope.sendData = function () {
-// 		    $http({
-// 		        url: 'http://localhost:8060/amicommember/loginPost',
-// 		        method: "POST",
-// 		        data: $scope.login,
-// 		        headers: {'Content-Type': 'application/json'},
-// 		    })
-// 		    .then(function (data, status, headers, config) {
-// 	            $scope.message = data;
-// 		    }, 
-// 		    function(response) { // optional
-// 	    		Alert("Fail");
-// 		    });
-// 		}
-// 	});	
+ 		$scope.sendQuestionEmail = function () {
+ 			var quest = $resource("http://localhost:8060/amicommember/question/email" + "?studentNumber=" + $scope.studentNumber + "&name=" + $scope.name);
+ 		    quest.get(function(data){ 		    	
+ 		    	$scope.questionEmailResult = data.result;
+ 		    	console.log(data.result)
+ 		    });
+ 		}
+ 		 		
+ 		$scope.email = '';
+ 		$scope.questionPassword = {'email' : $scope.email,
+ 				'studentNumber' : $scope.studentNumber
+ 		}
+ 		
+ 		$scope.sendQuestionPassword = function () {
+ 		    /* $http({
+ 		        url: 'http://localhost:8060/amicommember/question/password',
+ 		        method: "GET",
+ 		        data: $scope.questionPassword,
+ 		        headers: {'Content-Type': 'application/json'}
+ 		    })
+ 		    .then(function (data, status, headers, config) {
+ 	            $scope.questionPasswordResult = data;
+ 		    }, 
+ 		    function(response) { // optional 	    	
+ 		    	Alert("Fail");
+ 		    }); */
+ 		    
+ 		   var quest = $resource("http://localhost:8060/amicommember/question/password" + "?studentNumber=" + $scope.studentNumber + "&email=" + $scope.email);
+		    quest.get(function(data){ 		    	
+		    	$scope.questionPasswordResult = data.result;
+		    	console.log(data.result)
+		    });
+ 		}
+ 	});	
 // ]]>
 </script>
 
 </html>
-
-
