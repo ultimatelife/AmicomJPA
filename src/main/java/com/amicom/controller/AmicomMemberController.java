@@ -82,7 +82,7 @@ public class AmicomMemberController {
 		return "amicommember/board";
 	}
 	
-	@CrossOrigin(origins = "http://localhost:8080")
+	@CrossOrigin(origins = "http://54.213.137.25:8080")
 	@ResponseBody
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	List<AmicomMember> list() {

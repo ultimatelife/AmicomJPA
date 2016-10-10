@@ -1,5 +1,5 @@
-curl http://localhost:8080/amicommember/insert -v -X POST -H "Content-Type: application/json" -d "{\"username\" : \"ultimatelife@nate.com\",\"password\" : \"drama0708!@\",\"name\" : \"kunwoo\",\"cellphone\" : \"010-6486-8101\",\"studentNumber\" : \"201021600\", \"major\" : \"ComputerScience\",\"birthday\" : \"1992-01-24\",\"obyb\" : \"yb\"}"
+curl http://54.213.137.25:8080/amicommember/insert -v -X POST -H "Content-Type: application/json" -d "{\"username\" : \"ultimatelife@nate.com\",\"password\" : \"drama0708!@\",\"name\" : \"kunwoo\",\"cellphone\" : \"010-6486-8101\",\"studentNumber\" : \"201021600\", \"major\" : \"ComputerScience\",\"birthday\" : \"1992-01-24\",\"obyb\" : \"yb\"}"
 
-curl http://localhost:8080/amicommember/isDuplicate?username=ultimatelife@nate.com -v -X GET -H "Content-Type: application/json"
+curl http://54.213.137.25:8080/amicommember/isDuplicate?username=ultimatelife@nate.com -v -X GET -H "Content-Type: application/json"
 
-curl http://localhost:8080/amicommember/loginPost -v -X POST -H "Content-Type: application/json" -d "{\"username\" : \"ultimatelife@nate.com\",\"password\" : \"drama0708!@\"}"
+curl http://54.213.137.25:8080/amicommember/loginPost -v -X POST -H "Content-Type: application/json" -d "{\"username\" : \"ultimatelife@nate.com\",\"password\" : \"drama0708!@\"}"

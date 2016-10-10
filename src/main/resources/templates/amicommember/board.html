@@ -102,7 +102,7 @@
 	var myModule = angular.module('myApp', [ 'ngResource', 'angularUtils.directives.dirPagination']);
 	
 	myModule.controller('controller', function($scope, $resource, $location) {
-		var res = $resource('http://localhost:8080/amicommember/list');
+		var res = $resource('http://54.213.137.25:8080/amicommember/list');
 		res.query(function(data) {
 			$scope.rows = data;
 		});
