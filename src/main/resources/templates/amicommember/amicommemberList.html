@@ -62,7 +62,7 @@
                 <tbody>
                     <tr dir-paginate="row in rows|orderBy:sortKey:reverse|filter:search|itemsPerPage:6">
 						<td class="col-md-1">{{row.boardId}}</td>
-						<td class="col-md-4"><a href="http://localhost:8060/normalboard/read/{{row.boardId}}/{{boardName}}">{{row.title}}</a></td>
+						<td class="col-md-4"><a href="http://localhost:8080/normalboard/read/{{row.boardId}}/{{boardName}}">{{row.title}}</a></td>
 						<td class="col-md-3">{{row.amicomMember.name}}</td>
 						<td class="col-md-3">{{row.timeStamp}}</td>
                     </tr>
@@ -97,7 +97,7 @@
 <!-- 			<tbody id="tbody"> -->
 <!-- 				<tr ng-repeat="row in rows"> -->
 <!-- 					<td class="col-md-1">{{row.boardId}}</td> -->
-<!-- 					<td class="col-md-4"><a href="http://localhost:8060/normalboard/read/{{row.boardId}}/{{boardName}}">{{row.title}}</a></td> -->
+<!-- 					<td class="col-md-4"><a href="http://localhost:8080/normalboard/read/{{row.boardId}}/{{boardName}}">{{row.title}}</a></td> -->
 <!-- 					<td class="col-md-3">{{row.amicomMember.name}}</td> -->
 <!-- 					<td class="col-md-3">{{row.timeStamp}}</td> -->
 <!-- 				</tr> -->
@@ -161,12 +161,12 @@
 			}
 			
 			
-// 			$http.get("http://localhost:8060/normalboard/page/java?page=0&size=10").
+// 			$http.get("http://localhost:8080/normalboard/page/java?page=0&size=10").
 // 			success(function(data){
 // 				$scope.row = data
 // 			});
 			
-			var res = $resource('http://localhost:8060/normalboard/allList/' + $scope.boardName);
+			var res = $resource('http://localhost:8080/normalboard/allList/' + $scope.boardName);
 			res.query(function(data) {
 				$scope.rows = data;
 			});

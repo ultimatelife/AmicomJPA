@@ -6374,7 +6374,7 @@ jQuery.extend({
 		}
 
 		// Reset defaultChecked for any radios and checkboxes
-		// about to be appended to the DOM in IE 6/7 (#8060)
+		// about to be appended to the DOM in IE 6/7 (#8080)
 		if ( !jQuery.support.appendChecked ) {
 			for ( i = 0; (elem = ret[i]) != null; i++ ) {
 				if ( jQuery.nodeName( elem, "input" ) ) {

@@ -106,14 +106,14 @@
 			$scope.boardId = url.split('/')[5]
 			$scope.boardName = url.split('/')[6];
 			
-			$http.get('http://localhost:8060/normalboard/read/detail/' + $scope.boardId)
+			$http.get('http://localhost:8080/normalboard/read/detail/' + $scope.boardId)
 		    .then(function (response) {$scope.rows = response.data});
 			
-			$http.get("http://localhost:8060/reply/" + $scope.boardId)
+			$http.get("http://localhost:8080/reply/" + $scope.boardId)
 		    .then(function (response) {$scope.replys = response.data});
 			
 	 		$scope.sendReply = function () {
-	 			$http.post('http://localhost:8060/reply/' + $scope.boardId, {"content" : $scope.replyContent}).
+	 			$http.post('http://localhost:8080/reply/' + $scope.boardId, {"content" : $scope.replyContent}).
 				success(function (data, status, headers, config){
 					$scope.replys.push(data);
 					alert("추가되었습니다.");
@@ -123,7 +123,7 @@
 			$scope.deleteReply = function(replyUsername, replyId, index){
 				if(replyUsername == $scope.currentUsername){
 					alert("삭제 할수있습니다.")
-					$http.delete('http://localhost:8060/reply/delete/' + replyId).
+					$http.delete('http://localhost:8080/reply/delete/' + replyId).
 					success(function (data, status, headers, config) {
 					});
 					

@@ -170,7 +170,7 @@
 		};
 		
  		$scope.sendQuestionEmail = function () {
- 			var quest = $resource("http://localhost:8060/amicommember/question/email" + "?studentNumber=" + $scope.studentNumber + "&name=" + $scope.name);
+ 			var quest = $resource("http://localhost:8080/amicommember/question/email" + "?studentNumber=" + $scope.studentNumber + "&name=" + $scope.name);
  		    quest.get(function(data){ 		    	
  		    	$scope.questionEmailResult = data.result;
  		    	console.log(data.result)
@@ -184,7 +184,7 @@
  		
  		$scope.sendQuestionPassword = function () {
  		    /* $http({
- 		        url: 'http://localhost:8060/amicommember/question/password',
+ 		        url: 'http://localhost:8080/amicommember/question/password',
  		        method: "GET",
  		        data: $scope.questionPassword,
  		        headers: {'Content-Type': 'application/json'}
@@ -196,7 +196,7 @@
  		    	Alert("Fail");
  		    }); */
  		    
- 		   var quest = $resource("http://localhost:8060/amicommember/question/password" + "?studentNumber=" + $scope.studentNumber + "&email=" + $scope.email);
+ 		   var quest = $resource("http://localhost:8080/amicommember/question/password" + "?studentNumber=" + $scope.studentNumber + "&email=" + $scope.email);
 		    quest.get(function(data){ 		    	
 		    	$scope.questionPasswordResult = data.result;
 		    	console.log(data.result)
