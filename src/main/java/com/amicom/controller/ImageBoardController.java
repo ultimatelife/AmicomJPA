@@ -53,6 +53,7 @@ public class ImageBoardController {
 	@ResponseBody
 	@RequestMapping(value = "allList/{boardName}", method = RequestMethod.GET)
 	List<ImageBoard> list(@PathVariable String boardName) {
+		System.out.println(boardName);
 		List<ImageBoard> list = imageBoardService.allList(boardName);
 		Collections.reverse(list);
 		return list;
