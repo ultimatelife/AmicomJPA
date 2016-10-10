@@ -39,6 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     		.authorizeRequests()
     			.antMatchers("/test/*").permitAll()
     			.antMatchers("/amicommember/insert").permitAll()
+    			.antMatchers("/amicommember/confirm/*").permitAll()
     			.antMatchers("/loginForm").permitAll()
     			.antMatchers("/amicommember/isDuplicate").permitAll()
                 .antMatchers("/amicommember/loginForm").permitAll()

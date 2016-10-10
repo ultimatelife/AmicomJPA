@@ -16,7 +16,7 @@ import com.amicom.dao.ImageBoard;
 @Transactional
 public interface ImageBoardRepository extends JpaRepository<ImageBoard, Integer>{
 
-	List<ImageBoard> findByBoardName(BoardChart boardChart, Pageable pageable);
+	List<ImageBoard> findByBoardNameOrderByBoardId(BoardChart boardChart, Pageable pageable);
 	
 	@Query("SELECT count(n) FROM ImageBoard n WHERE n.boardName = :boardName")
 	int size(@Param("boardName") BoardChart boardName);

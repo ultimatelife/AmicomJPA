@@ -52,7 +52,7 @@
                         	Title
 			                <span class="glyphicon sort-icon" ng-show="sortKey=='title'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>          	
                        	</th>
-                        <th class="col-md-3" ng-click="sort('amicomMember.name')">
+                        <th class="col-md-3" ng-click="sort('amicomMember.name')" ng-hide="boardName == '익명게시판'" >
                         	Name
                         	<span class="glyphicon sort-icon" ng-show="sortKey=='amicomMember.name'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
                        	</th>
@@ -66,7 +66,7 @@
                     <tr dir-paginate="row in rows|orderBy:sortKey:reverse|filter:search|itemsPerPage:6">
 						<td class="col-md-1">{{row.boardId}}</td>
 						<td class="col-md-4"><a href="http://54.213.137.25:8080/normalboard/read/{{row.boardId}}/{{boardName}}">{{row.title}}</a></td>
-						<td class="col-md-3">{{row.amicomMember.name}}</td>
+						<td class="col-md-3" ng-hide="boardName == '익명게시판'">{{row.amicomMember.name}}</td>
 						<td class="col-md-3">{{row.timeStamp}}</td>
                     </tr>
                 </tbody>

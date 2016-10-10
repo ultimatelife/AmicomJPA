@@ -1,6 +1,8 @@
 package com.amicom.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,9 @@ public class ImageBoardService {
 	AmicomMemberRepository amicomMemberRepository;
 
 	public List<ImageBoard> list(String boardName, Pageable pageable) {
-		return imageBoardRepository.findByBoardName(new BoardChart(boardName), pageable);
+		List<ImageBoard> imageboards = imageBoardRepository.findByBoardNameOrderByBoardId(new BoardChart(boardName), pageable);
+		Collections.reverse(imageboards);
+		return imageboards;
 	}
 
 	public ImageBoard read(int boardId) {

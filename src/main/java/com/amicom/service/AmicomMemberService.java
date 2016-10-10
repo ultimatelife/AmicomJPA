@@ -64,6 +64,7 @@ public class AmicomMemberService {
 	}
 
 	public void confirm(String uuid) {
+		System.out.println(uuid);
 		amicomMemberRepository.confirm(uuid);
 	}
 	
