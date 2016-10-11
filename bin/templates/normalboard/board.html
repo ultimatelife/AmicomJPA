@@ -28,7 +28,7 @@
 	</div>
 	
 	<div class="container">
-		<h1>{{boardName}}</h1>
+		<h1>{{titleName}}</h1>
 			<h3 ng-if="!whenNoticeBoard">공지사항에 글을 올리게 되면 전원에게 E-mail이 발송됩니다.</h3>
 		<br/>
 		
@@ -52,7 +52,7 @@
                         	Title
 			                <span class="glyphicon sort-icon" ng-show="sortKey=='title'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>          	
                        	</th>
-                        <th class="col-md-3" ng-click="sort('amicomMember.name')" ng-hide="boardName == '익명게시판'" >
+                        <th class="col-md-3" ng-click="sort('amicomMember.name')" ng-hide="boardName == 'anonymity'" >
                         	Name
                         	<span class="glyphicon sort-icon" ng-show="sortKey=='amicomMember.name'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
                        	</th>
@@ -66,7 +66,7 @@
                     <tr dir-paginate="row in rows|orderBy:sortKey:reverse|filter:search|itemsPerPage:6">
 						<td class="col-md-1">{{row.boardId}}</td>
 						<td class="col-md-4"><a href="http://54.213.137.25:8080/normalboard/read/{{row.boardId}}/{{boardName}}">{{row.title}}</a></td>
-						<td class="col-md-3" ng-hide="boardName == '익명게시판'">{{row.amicomMember.name}}</td>
+						<td class="col-md-3" ng-hide="boardName == 'anonymity'">{{row.amicomMember.name}}</td>
 						<td class="col-md-3">{{row.timeStamp}}</td>
                     </tr>
                 </tbody>
@@ -167,8 +167,22 @@
 			var url = $location.absUrl();
 			$scope.boardName = decodeURI(url.split('/')[5]);
 			if($scope.boardName.charAt($scope.boardName.length - 1) == "#"){
-				$scope.boardName = $scope.boardName.substring(0, $scope.boardName.length - 1); 
+				$scope.boardName = $scope.boardName.substring(0, $scope.boardName.length - 1);								
 			}
+			
+			var temp = $scope.boardName;
+			if(temp == 'free'){
+				$scope.titleName = "자유게시판";	
+			}else if(temp == 'source'){
+				$scope.titleName = "소스";
+			}else if(temp == 'anonymity'){
+				$scope.titleName = "익명게시판";
+			}else if(temp == 'c_language'){
+				$scope.titleName = "C 언어";
+			}else {
+				$scope.titleName = temp;
+			}	
+
 			
 			
 			//Authority Check When 공지사항
